@@ -1,4 +1,4 @@
-import 'package:anoncreds_wrapper_dart/anoncreds/anoncreds_wrapper.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

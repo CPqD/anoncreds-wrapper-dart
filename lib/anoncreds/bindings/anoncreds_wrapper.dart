@@ -1,6 +1,6 @@
 import 'dart:ffi';
 
-import 'package:anoncreds_wrapper_dart/anoncreds/anoncreds_native_functions.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_native_functions.dart';
 import 'package:ffi/ffi.dart';
 
 String anoncredsVersion() {
