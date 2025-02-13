@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
 import 'package:flutter_test/flutter_test.dart';
 
