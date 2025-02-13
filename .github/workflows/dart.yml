@@ -18,6 +18,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Build Anoncreds
+        run: ./build_anoncreds_linux.sh
+
       # Note: This workflow uses the latest stable version of the Flutter SDK.
       # You can specify other versions if desired, see documentation here:
       # https://github.com/flutter-actions/setup-flutter/blob/main/.github/workflows/flutter-linux.yml
@@ -26,9 +29,6 @@ jobs:
         with:
           channel: stable
           version: 3.27.1
-
-      - name: Build Anoncreds
-        run: ./build_anoncreds_linux.sh
 
       # Uncomment this step to verify the use of 'dart format' on each commit.
       # - name: Verify formatting
