@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:ffi';
 
+import 'package:anoncreds_wrapper_dart/anoncreds/api/credential_definition.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_native_functions.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_native_types.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_native_utils.dart';
@@ -35,6 +37,30 @@ String anoncredsVersion() {
     return resultPointer.toDartString();
   } finally {
     freePointer(resultPointer);
+  }
+}
+
+AnoncredsResult<CredentialDefinition> anoncredsCredentialDefinitionFromJson(
+    Map<String, dynamic> json) {
+  Pointer<Int64> handlePtr = calloc<Int64>();
+
+  Pointer<FfiByteBuffer> byteBufferPtr = nullptr;
+
+  try {
+    byteBufferPtr = stringToByteBuffer(jsonEncode(json));
+
+    final errorCode = ErrorCode.fromInt(nativeAnoncredsCredentialDefinitionFromJson(
+      byteBufferPtr,
+      handlePtr,
+    ));
+
+    final handle =
+        CredentialDefinition((errorCode == ErrorCode.success) ? handlePtr.value : 0);
+
+    return AnoncredsResult(errorCode, handle);
+  } finally {
+    freePointer(handlePtr);
+    freeByteBufferPointer(byteBufferPtr);
   }
 }
 

@@ -11,7 +11,7 @@
 - [ ] anoncreds_create_schema
 - [ ] anoncreds_create_w3c_credential
 - [ ] anoncreds_create_w3c_presentation
-- [ ] anoncreds_credential_definition_from_json
+- [x] anoncreds_credential_definition_from_json
 - [ ] anoncreds_credential_definition_private_from_json
 - [ ] anoncreds_credential_from_json
 - [ ] anoncreds_credential_from_w3c

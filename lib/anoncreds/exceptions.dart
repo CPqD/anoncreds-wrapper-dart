@@ -22,3 +22,16 @@ class AnoncredsException implements Exception {
     return "Askar Exception: $message";
   }
 }
+
+class NotImplementedException implements Exception {
+  final String? fnName;
+
+  NotImplementedException([this.fnName]);
+
+  @override
+  String toString() {
+    return (fnName == null)
+        ? "Function not implemented."
+        : "Function '$fnName' is not implemented.";
+  }
+}
