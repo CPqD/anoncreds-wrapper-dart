@@ -1,18 +1,18 @@
-import 'dart:convert';
+import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 
-import '../types.dart';
 import '../anoncreds_object.dart';
-import '../register.dart';
 
 class RevocationRegistryDefinitionPrivate extends AnoncredsObject {
-  RevocationRegistryDefinitionPrivate(int handle) : super(handle);
+  RevocationRegistryDefinitionPrivate(super.handle);
 
-  factory RevocationRegistryDefinitionPrivate.fromJson(JsonObject json) {
-    return RevocationRegistryDefinitionPrivate(
-      anoncreds
-              ?.revocationRegistryDefinitionPrivateFromJson(json: jsonEncode(json))
-              .handle ??
-          0,
-    );
+  factory RevocationRegistryDefinitionPrivate.fromJson(Map<String, dynamic> json) {
+    try {
+      return anoncredsRevocationRegistryDefinitionPrivateFromJson(json)
+          .getValueOrException();
+    } catch (e) {
+      throw AnoncredsException(
+          "Failed to get revocation registry definition private from json: $e");
+    }
   }
 }

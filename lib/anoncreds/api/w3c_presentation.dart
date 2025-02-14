@@ -1,9 +1,9 @@
-import 'dart:convert';
+import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 
 import '../anoncreds.dart';
 import 'presentation.dart';
 import '../object_handle.dart';
-import '../types.dart';
 import '../anoncreds_object.dart';
 import '../register.dart';
 import 'credential_definition.dart';
@@ -64,7 +64,7 @@ class VerifyW3cPresentationOptions {
 }
 
 class W3cPresentation extends AnoncredsObject {
-  W3cPresentation(int handle) : super(handle);
+  W3cPresentation(super.handle);
 
   factory W3cPresentation.create(CreateW3cPresentationOptions options) {
     int presentationHandle;
@@ -129,10 +129,12 @@ class W3cPresentation extends AnoncredsObject {
     return W3cPresentation(presentationHandle);
   }
 
-  factory W3cPresentation.fromJson(JsonObject json) {
-    return W3cPresentation(
-      anoncreds?.w3cPresentationFromJson(json: jsonEncode(json)).handle ?? 0,
-    );
+  factory W3cPresentation.fromJson(Map<String, dynamic> json) {
+    try {
+      return anoncredsW3cPresentationFromJson(json).getValueOrException();
+    } catch (e) {
+      throw AnoncredsException("Failed to get W3C presentation from json: $e");
+    }
   }
 
   bool verify(VerifyW3cPresentationOptions options) {

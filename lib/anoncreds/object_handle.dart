@@ -1,22 +1,33 @@
-import 'register.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 
 class ObjectHandle {
-  final int _handle;
+  final int handle;
 
-  ObjectHandle(this._handle);
-
-  int get handle => _handle;
-
-  int toInt() {
-    return _handle;
-  }
+  ObjectHandle(this.handle);
 
   String typeName() {
-    return anoncreds?.getTypeName(objectHandle: this) ?? '';
+    try {
+      return anoncredsObjectGetTypeName(this).getValueOrException();
+    } catch (e) {
+      throw AnoncredsException('Failed to get type name');
+    }
   }
 
-  // TODO: do we need this?
   void clear() {
-    anoncreds?.objectFree(objectHandle: this);
+    try {
+      return anoncredsObjectFree(this);
+    } catch (e) {
+      throw AnoncredsException('Failed to free object');
+    }
+  }
+
+  int toInt() {
+    return handle;
+  }
+
+  @override
+  String toString() {
+    return "ObjectHandle($handle)";
   }
 }

@@ -1,6 +1,6 @@
-import 'dart:convert';
+import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 
-import '../types.dart';
 import '../anoncreds_object.dart';
 import '../register.dart';
 import 'credential_definition.dart';
@@ -27,7 +27,7 @@ class CreateCredentialRequestOptions {
 }
 
 class CredentialRequest extends AnoncredsObject {
-  CredentialRequest(int handle) : super(handle);
+  CredentialRequest(super.handle);
 
   factory CredentialRequest.create(CreateCredentialRequestOptions options) {
     late Map<String, ObjectHandle> createReturnObj;
@@ -63,9 +63,11 @@ class CredentialRequest extends AnoncredsObject {
     return CredentialRequest(createReturnObj['credentialRequest']!.handle);
   }
 
-  factory CredentialRequest.fromJson(JsonObject json) {
-    return CredentialRequest(
-      anoncreds?.credentialRequestFromJson(json: jsonEncode(json)).handle ?? 0,
-    );
+  factory CredentialRequest.fromJson(Map<String, dynamic> json) {
+    try {
+      return anoncredsCredentialRequestFromJson(json).getValueOrException();
+    } catch (e) {
+      throw AnoncredsException("Failed to get credential offer from json: $e");
+    }
   }
 }

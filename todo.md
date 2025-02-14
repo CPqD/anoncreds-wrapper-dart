@@ -12,32 +12,32 @@
 - [ ] anoncreds_create_w3c_credential
 - [ ] anoncreds_create_w3c_presentation
 - [x] anoncreds_credential_definition_from_json
-- [ ] anoncreds_credential_definition_private_from_json
-- [ ] anoncreds_credential_from_json
+- [x] anoncreds_credential_definition_private_from_json
+- [x] anoncreds_credential_from_json
 - [ ] anoncreds_credential_from_w3c
 - [ ] anoncreds_credential_get_attribute
-- [ ] anoncreds_credential_offer_from_json
-- [ ] anoncreds_credential_request_from_json
-- [ ] anoncreds_credential_request_metadata_from_json
+- [x] anoncreds_credential_offer_from_json
+- [x] anoncreds_credential_request_from_json
+- [x] anoncreds_credential_request_metadata_from_json
 - [ ] anoncreds_credential_to_w3c
 - [ ] anoncreds_encode_credential_attributes
 - [ ] anoncreds_generate_nonce
 - [ ] anoncreds_get_current_error
-- [ ] anoncreds_key_correctness_proof_from_json
+- [x] anoncreds_key_correctness_proof_from_json
 - [x] anoncreds_object_free
 - [x] anoncreds_object_get_json
 - [x] anoncreds_object_get_type_name
-- [ ] anoncreds_presentation_from_json
-- [ ] anoncreds_presentation_request_from_json
+- [x] anoncreds_presentation_from_json
+- [x] anoncreds_presentation_request_from_json
 - [ ] anoncreds_process_credential
 - [ ] anoncreds_process_w3c_credential
-- [ ] anoncreds_revocation_registry_definition_from_json
+- [x] anoncreds_revocation_registry_definition_from_json
 - [ ] anoncreds_revocation_registry_definition_get_attribute
-- [ ] anoncreds_revocation_registry_definition_private_from_json
-- [ ] anoncreds_revocation_registry_from_json
-- [ ] anoncreds_revocation_state_from_json
-- [ ] anoncreds_revocation_status_list_from_json
-- [ ] anoncreds_schema_from_json
+- [x] anoncreds_revocation_registry_definition_private_from_json
+- [x] anoncreds_revocation_registry_from_json
+- [x] anoncreds_revocation_state_from_json
+- [x] anoncreds_revocation_status_list_from_json
+- [x] anoncreds_schema_from_json
 - [ ] anoncreds_set_default_logger
 - [ ] anoncreds_string_free
 - [ ] anoncreds_update_revocation_status_list
@@ -45,7 +45,7 @@
 - [ ] anoncreds_verify_presentation
 - [ ] anoncreds_verify_w3c_presentation
 - [x] anoncreds_version
-- [ ] anoncreds_w3c_credential_from_json
+- [x] anoncreds_w3c_credential_from_json
 - [ ] anoncreds_w3c_credential_get_integrity_proof_details
 - [ ] anoncreds_w3c_credential_proof_get_attribute
-- [ ] anoncreds_w3c_presentation_from_json
+- [x] anoncreds_w3c_presentation_from_json

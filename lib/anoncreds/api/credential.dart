@@ -1,4 +1,5 @@
-import 'dart:convert';
+import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 
 import 'credential_request.dart';
 import 'credential_request_metadata.dart';
@@ -11,7 +12,6 @@ import 'credential_definition.dart';
 import 'credential_definition_private.dart';
 import 'credential_offer.dart';
 import '../object_handle.dart';
-import '../types.dart';
 
 class CreateCredentialOptions {
   final dynamic credentialDefinition;
@@ -70,7 +70,7 @@ class CredentialFromW3cOptions {
 }
 
 class Credential extends AnoncredsObject {
-  Credential(int handle) : super(handle);
+  Credential(super.handle);
 
   static Credential create(CreateCredentialOptions options) {
     int credential;
@@ -119,8 +119,12 @@ class Credential extends AnoncredsObject {
     return Credential(credential);
   }
 
-  static Credential fromJson(JsonObject json) {
-    return Credential(anoncreds!.credentialFromJson(json: jsonEncode(json)).handle);
+  factory Credential.fromJson(Map<String, dynamic> json) {
+    try {
+      return anoncredsCredentialFromJson(json).getValueOrException();
+    } catch (e) {
+      throw AnoncredsException("Failed to get credential from json: $e");
+    }
   }
 
   Credential process(ProcessCredentialOptions options) {

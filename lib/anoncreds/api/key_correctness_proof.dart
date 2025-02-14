@@ -1,15 +1,16 @@
-import 'dart:convert';
+import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 
-import '../types.dart';
 import '../anoncreds_object.dart';
-import '../register.dart';
 
 class KeyCorrectnessProof extends AnoncredsObject {
-  KeyCorrectnessProof(int handle) : super(handle);
+  KeyCorrectnessProof(super.handle);
 
-  factory KeyCorrectnessProof.fromJson(JsonObject json) {
-    return KeyCorrectnessProof(
-      anoncreds?.keyCorrectnessProofFromJson(json: jsonEncode(json)).handle ?? 0,
-    );
+  factory KeyCorrectnessProof.fromJson(Map<String, dynamic> json) {
+    try {
+      return anoncredsKeyCorrectnessProofFromJson(json).getValueOrException();
+    } catch (e) {
+      throw AnoncredsException("Failed to get key correctness proof from json: $e");
+    }
   }
 }

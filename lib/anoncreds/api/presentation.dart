@@ -1,9 +1,9 @@
-import 'dart:convert';
+import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 
 import '../anoncreds.dart';
 import 'revocation_registry.dart';
 import '../object_handle.dart';
-import '../types.dart';
 import '../anoncreds_object.dart';
 import '../register.dart';
 import 'credential.dart';
@@ -104,7 +104,7 @@ class VerifyPresentationOptions {
 }
 
 class Presentation extends AnoncredsObject {
-  Presentation(int handle) : super(handle);
+  Presentation(super.handle);
 
   factory Presentation.create(CreatePresentationOptions options) {
     int presentationHandle;
@@ -168,10 +168,12 @@ class Presentation extends AnoncredsObject {
     return Presentation(presentationHandle);
   }
 
-  factory Presentation.fromJson(JsonObject json) {
-    return Presentation(
-      anoncreds?.presentationFromJson(json: jsonEncode(json)).handle ?? 0,
-    );
+  factory Presentation.fromJson(Map<String, dynamic> json) {
+    try {
+      return anoncredsPresentationFromJson(json).getValueOrException();
+    } catch (e) {
+      throw AnoncredsException("Failed to get presentation from json: $e");
+    }
   }
 
   bool verify(VerifyPresentationOptions options) {

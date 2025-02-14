@@ -1,15 +1,16 @@
-import 'dart:convert';
+import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 
-import '../types.dart';
 import '../anoncreds_object.dart';
-import '../register.dart';
 
 class PresentationRequest extends AnoncredsObject {
-  PresentationRequest(int handle) : super(handle);
+  PresentationRequest(super.handle);
 
-  factory PresentationRequest.fromJson(JsonObject json) {
-    return PresentationRequest(
-      anoncreds?.presentationRequestFromJson(json: jsonEncode(json)).handle ?? 0,
-    );
+  factory PresentationRequest.fromJson(Map<String, dynamic> json) {
+    try {
+      return anoncredsPresentationRequestFromJson(json).getValueOrException();
+    } catch (e) {
+      throw AnoncredsException("Failed to get presentation request from json: $e");
+    }
   }
 }

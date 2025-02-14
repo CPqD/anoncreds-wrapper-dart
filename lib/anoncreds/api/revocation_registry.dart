@@ -1,30 +1,16 @@
-import 'dart:convert';
+import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 
-import 'revocation_registry_definition.dart';
-import '../types.dart';
 import '../anoncreds_object.dart';
-import '../register.dart';
-
-class UpdateRevocationRegistryOptions {
-  final RevocationRegistryDefinition revocationRegistryDefinition;
-  final List<int> issued;
-  final List<int> revoked;
-  final String tailsDirectoryPath;
-
-  UpdateRevocationRegistryOptions({
-    required this.revocationRegistryDefinition,
-    required this.issued,
-    required this.revoked,
-    required this.tailsDirectoryPath,
-  });
-}
 
 class RevocationRegistry extends AnoncredsObject {
-  RevocationRegistry(int handle) : super(handle);
+  RevocationRegistry(super.handle);
 
-  factory RevocationRegistry.fromJson(JsonObject json) {
-    return RevocationRegistry(
-      anoncreds?.revocationRegistryFromJson(json: jsonEncode(json)).handle ?? 0,
-    );
+  factory RevocationRegistry.fromJson(Map<String, dynamic> json) {
+    try {
+      return anoncredsRevocationRegistryFromJson(json).getValueOrException();
+    } catch (e) {
+      throw AnoncredsException("Failed to get revocation registry offer from json: $e");
+    }
   }
 }

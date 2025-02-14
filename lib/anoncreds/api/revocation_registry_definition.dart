@@ -1,7 +1,7 @@
-import 'dart:convert';
+import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 
 import '../object_handle.dart';
-import '../types.dart';
 import '../anoncreds_object.dart';
 import '../register.dart';
 import 'credential_definition.dart';
@@ -28,7 +28,7 @@ class CreateRevocationRegistryDefinitionOptions {
 }
 
 class RevocationRegistryDefinition extends AnoncredsObject {
-  RevocationRegistryDefinition(int handle) : super(handle);
+  RevocationRegistryDefinition(super.handle);
 
   factory RevocationRegistryDefinition.create(
       CreateRevocationRegistryDefinitionOptions options) {
@@ -63,10 +63,13 @@ class RevocationRegistryDefinition extends AnoncredsObject {
         createReturnObj['revocationRegistryDefinition']!.handle);
   }
 
-  factory RevocationRegistryDefinition.fromJson(JsonObject json) {
-    return RevocationRegistryDefinition(
-      anoncreds?.revocationRegistryDefinitionFromJson(json: jsonEncode(json)).handle ?? 0,
-    );
+  factory RevocationRegistryDefinition.fromJson(Map<String, dynamic> json) {
+    try {
+      return anoncredsRevocationRegistryDefinitionFromJson(json).getValueOrException();
+    } catch (e) {
+      throw AnoncredsException(
+          "Failed to get revocation registry definition from json: $e");
+    }
   }
 
   String getId() {

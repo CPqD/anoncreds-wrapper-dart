@@ -1,7 +1,7 @@
-import 'dart:convert';
+import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 
 import '../object_handle.dart';
-import '../types.dart';
 import '../anoncreds_object.dart';
 import '../register.dart';
 import 'credential_definition.dart';
@@ -56,7 +56,7 @@ class UpdateRevocationStatusListOptions {
 }
 
 class RevocationStatusList extends AnoncredsObject {
-  RevocationStatusList(int handle) : super(handle);
+  RevocationStatusList(super.handle);
 
   factory RevocationStatusList.create(CreateRevocationStatusListOptions options) {
     int revocationStatusListHandle;
@@ -108,10 +108,12 @@ class RevocationStatusList extends AnoncredsObject {
     return RevocationStatusList(revocationStatusListHandle);
   }
 
-  factory RevocationStatusList.fromJson(JsonObject json) {
-    return RevocationStatusList(
-      anoncreds?.revocationStatusListFromJson(json: jsonEncode(json)).handle ?? 0,
-    );
+  factory RevocationStatusList.fromJson(Map<String, dynamic> json) {
+    try {
+      return anoncredsRevocationStatusListFromJson(json).getValueOrException();
+    } catch (e) {
+      throw AnoncredsException("Failed to get revocation status list from json: $e");
+    }
   }
 
   void updateTimestamp(UpdateRevocationStatusListTimestampOptions options) {

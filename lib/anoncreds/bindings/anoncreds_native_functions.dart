@@ -266,26 +266,26 @@ final int Function(
     .asFunction();
 
 final int Function(
-  Pointer<FfiByteBuffer> json,
+  FfiByteBuffer json,
   Pointer<Int64> result_p,
 ) nativeAnoncredsCredentialDefinitionFromJson = nativeLib
-    .lookup<NativeFunction<Int32 Function(Pointer<FfiByteBuffer>, Pointer<Int64>)>>(
+    .lookup<NativeFunction<Int32 Function(FfiByteBuffer, Pointer<Int64>)>>(
         'anoncreds_credential_definition_from_json')
     .asFunction();
 
 final int Function(
-  Pointer<FfiByteBuffer> json,
+  FfiByteBuffer json,
   Pointer<Int64> result_p,
 ) nativeAnoncredsCredentialDefinitionPrivateFromJson = nativeLib
-    .lookup<NativeFunction<Int32 Function(Pointer<FfiByteBuffer>, Pointer<Int64>)>>(
+    .lookup<NativeFunction<Int32 Function(FfiByteBuffer, Pointer<Int64>)>>(
         'anoncreds_credential_definition_private_from_json')
     .asFunction();
 
 final int Function(
-  Pointer<FfiByteBuffer> json,
+  FfiByteBuffer json,
   Pointer<Int64> result_p,
 ) nativeAnoncredsCredentialFromJson = nativeLib
-    .lookup<NativeFunction<Int32 Function(Pointer<FfiByteBuffer>, Pointer<Int64>)>>(
+    .lookup<NativeFunction<Int32 Function(FfiByteBuffer, Pointer<Int64>)>>(
         'anoncreds_credential_from_json')
     .asFunction();
 
@@ -307,26 +307,26 @@ final int Function(
     .asFunction();
 
 final int Function(
-  Pointer<FfiByteBuffer> json,
+  FfiByteBuffer json,
   Pointer<Int64> result_p,
 ) nativeAnoncredsCredentialOfferFromJson = nativeLib
-    .lookup<NativeFunction<Int32 Function(Pointer<FfiByteBuffer>, Pointer<Int64>)>>(
+    .lookup<NativeFunction<Int32 Function(FfiByteBuffer, Pointer<Int64>)>>(
         'anoncreds_credential_offer_from_json')
     .asFunction();
 
 final int Function(
-  Pointer<FfiByteBuffer> json,
+  FfiByteBuffer json,
   Pointer<Int64> result_p,
 ) nativeAnoncredsCredentialRequestFromJson = nativeLib
-    .lookup<NativeFunction<Int32 Function(Pointer<FfiByteBuffer>, Pointer<Int64>)>>(
+    .lookup<NativeFunction<Int32 Function(FfiByteBuffer, Pointer<Int64>)>>(
         'anoncreds_credential_request_from_json')
     .asFunction();
 
 final int Function(
-  Pointer<FfiByteBuffer> json,
+  FfiByteBuffer json,
   Pointer<Int64> result_p,
 ) nativeAnoncredsCredentialRequestMetadataFromJson = nativeLib
-    .lookup<NativeFunction<Int32 Function(Pointer<FfiByteBuffer>, Pointer<Int64>)>>(
+    .lookup<NativeFunction<Int32 Function(FfiByteBuffer, Pointer<Int64>)>>(
         'anoncreds_credential_request_metadata_from_json')
     .asFunction();
 
@@ -365,10 +365,10 @@ final int Function(
     .asFunction();
 
 final int Function(
-  Pointer<FfiByteBuffer> json,
+  FfiByteBuffer json,
   Pointer<Int64> result_p,
 ) nativeAnoncredsKeyCorrectnessProofFromJson = nativeLib
-    .lookup<NativeFunction<Int32 Function(Pointer<FfiByteBuffer>, Pointer<Int64>)>>(
+    .lookup<NativeFunction<Int32 Function(FfiByteBuffer, Pointer<Int64>)>>(
         'anoncreds_key_correctness_proof_from_json')
     .asFunction();
 
@@ -395,18 +395,18 @@ final int Function(
     .asFunction();
 
 final int Function(
-  Pointer<FfiByteBuffer> json,
+  FfiByteBuffer json,
   Pointer<Int64> result_p,
 ) nativeAnoncredsPresentationFromJson = nativeLib
-    .lookup<NativeFunction<Int32 Function(Pointer<FfiByteBuffer>, Pointer<Int64>)>>(
+    .lookup<NativeFunction<Int32 Function(FfiByteBuffer, Pointer<Int64>)>>(
         'anoncreds_presentation_from_json')
     .asFunction();
 
 final int Function(
-  Pointer<FfiByteBuffer> json,
+  FfiByteBuffer json,
   Pointer<Int64> result_p,
 ) nativeAnoncredsPresentationRequestFromJson = nativeLib
-    .lookup<NativeFunction<Int32 Function(Pointer<FfiByteBuffer>, Pointer<Int64>)>>(
+    .lookup<NativeFunction<Int32 Function(FfiByteBuffer, Pointer<Int64>)>>(
         'anoncreds_presentation_request_from_json')
     .asFunction();
 
@@ -439,10 +439,10 @@ final int Function(
     .asFunction();
 
 final int Function(
-  Pointer<FfiByteBuffer> json,
+  FfiByteBuffer json,
   Pointer<Int64> result_p,
 ) nativeAnoncredsRevocationRegistryDefinitionFromJson = nativeLib
-    .lookup<NativeFunction<Int32 Function(Pointer<FfiByteBuffer>, Pointer<Int64>)>>(
+    .lookup<NativeFunction<Int32 Function(FfiByteBuffer, Pointer<Int64>)>>(
         'anoncreds_revocation_registry_definition_from_json')
     .asFunction();
 
@@ -456,42 +456,42 @@ final int Function(
     .asFunction();
 
 final int Function(
-  Pointer<FfiByteBuffer> json,
+  FfiByteBuffer json,
   Pointer<Int64> result_p,
 ) nativeAnoncredsRevocationRegistryDefinitionPrivateFromJson = nativeLib
-    .lookup<NativeFunction<Int32 Function(Pointer<FfiByteBuffer>, Pointer<Int64>)>>(
+    .lookup<NativeFunction<Int32 Function(FfiByteBuffer, Pointer<Int64>)>>(
         'anoncreds_revocation_registry_definition_private_from_json')
     .asFunction();
 
 final int Function(
-  Pointer<FfiByteBuffer> json,
+  FfiByteBuffer json,
   Pointer<Int64> result_p,
 ) nativeAnoncredsRevocationRegistryFromJson = nativeLib
-    .lookup<NativeFunction<Int32 Function(Pointer<FfiByteBuffer>, Pointer<Int64>)>>(
+    .lookup<NativeFunction<Int32 Function(FfiByteBuffer, Pointer<Int64>)>>(
         'anoncreds_revocation_registry_from_json')
     .asFunction();
 
 final int Function(
-  Pointer<FfiByteBuffer> json,
+  FfiByteBuffer json,
   Pointer<Int64> result_p,
 ) nativeAnoncredsRevocationStateFromJson = nativeLib
-    .lookup<NativeFunction<Int32 Function(Pointer<FfiByteBuffer>, Pointer<Int64>)>>(
+    .lookup<NativeFunction<Int32 Function(FfiByteBuffer, Pointer<Int64>)>>(
         'anoncreds_revocation_state_from_json')
     .asFunction();
 
 final int Function(
-  Pointer<FfiByteBuffer> json,
+  FfiByteBuffer json,
   Pointer<Int64> result_p,
 ) nativeAnoncredsRevocationStatusListFromJson = nativeLib
-    .lookup<NativeFunction<Int32 Function(Pointer<FfiByteBuffer>, Pointer<Int64>)>>(
+    .lookup<NativeFunction<Int32 Function(FfiByteBuffer, Pointer<Int64>)>>(
         'anoncreds_revocation_status_list_from_json')
     .asFunction();
 
 final int Function(
-  Pointer<FfiByteBuffer> json,
+  FfiByteBuffer json,
   Pointer<Int64> result_p,
 ) nativeAnoncredsSchemaFromJson = nativeLib
-    .lookup<NativeFunction<Int32 Function(Pointer<FfiByteBuffer>, Pointer<Int64>)>>(
+    .lookup<NativeFunction<Int32 Function(FfiByteBuffer, Pointer<Int64>)>>(
         'anoncreds_schema_from_json')
     .asFunction();
 
@@ -596,10 +596,10 @@ final int Function(
     .asFunction();
 
 final int Function(
-  Pointer<FfiByteBuffer> json,
+  FfiByteBuffer json,
   Pointer<Int64> result_p,
 ) nativeAnoncredsW3cCredentialFromJson = nativeLib
-    .lookup<NativeFunction<Int32 Function(Pointer<FfiByteBuffer>, Pointer<Int64>)>>(
+    .lookup<NativeFunction<Int32 Function(FfiByteBuffer, Pointer<Int64>)>>(
         'anoncreds_w3c_credential_from_json')
     .asFunction();
 
@@ -621,9 +621,9 @@ final int Function(
     .asFunction();
 
 final int Function(
-  Pointer<FfiByteBuffer> json,
+  FfiByteBuffer json,
   Pointer<Int64> result_p,
 ) nativeAnoncredsW3cPresentationFromJson = nativeLib
-    .lookup<NativeFunction<Int32 Function(Pointer<FfiByteBuffer>, Pointer<Int64>)>>(
+    .lookup<NativeFunction<Int32 Function(FfiByteBuffer, Pointer<Int64>)>>(
         'anoncreds_w3c_presentation_from_json')
     .asFunction();

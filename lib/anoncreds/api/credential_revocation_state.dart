@@ -1,6 +1,6 @@
-import 'dart:convert';
+import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 
-import '../types.dart';
 import '../anoncreds_object.dart';
 import '../register.dart';
 import 'revocation_registry_definition.dart';
@@ -44,7 +44,7 @@ class UpdateRevocationStateOptions {
 }
 
 class CredentialRevocationState extends AnoncredsObject {
-  CredentialRevocationState(int handle) : super(handle);
+  CredentialRevocationState(super.handle);
 
   factory CredentialRevocationState.create(CreateRevocationStateOptions options) {
     int credentialRevocationStateHandle;
@@ -75,10 +75,12 @@ class CredentialRevocationState extends AnoncredsObject {
     return CredentialRevocationState(credentialRevocationStateHandle);
   }
 
-  factory CredentialRevocationState.fromJson(JsonObject json) {
-    return CredentialRevocationState(
-      anoncreds?.revocationStateFromJson(json: jsonEncode(json)).handle ?? 0,
-    );
+  factory CredentialRevocationState.fromJson(Map<String, dynamic> json) {
+    try {
+      return anoncredsRevocationStateFromJson(json).getValueOrException();
+    } catch (e) {
+      throw AnoncredsException("Failed to get credential revocation state from json: $e");
+    }
   }
 
   void update(UpdateRevocationStateOptions options) {

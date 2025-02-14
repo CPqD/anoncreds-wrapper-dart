@@ -1,8 +1,8 @@
-import 'dart:convert';
+import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 
 import 'credential_revocation_config.dart';
 import '../object_handle.dart';
-import '../types.dart';
 import '../anoncreds_object.dart';
 import '../register.dart';
 import 'credential.dart';
@@ -67,7 +67,7 @@ class W3cCredentialFromLegacyOptions {
 class W3cCredential extends AnoncredsObject {
   ObjectHandle? proofDetails;
 
-  W3cCredential(int handle) : super(handle);
+  W3cCredential(super.handle);
 
   factory W3cCredential.create(CreateW3cCredentialOptions options) {
     int credentialHandle;
@@ -120,10 +120,12 @@ class W3cCredential extends AnoncredsObject {
     return W3cCredential(credentialHandle);
   }
 
-  factory W3cCredential.fromJson(JsonObject json) {
-    return W3cCredential(
-      anoncreds?.w3cCredentialFromJson(json: jsonEncode(json)).handle ?? 0,
-    );
+  factory W3cCredential.fromJson(Map<String, dynamic> json) {
+    try {
+      return anoncredsW3cCredentialFromJson(json).getValueOrException();
+    } catch (e) {
+      throw AnoncredsException("Failed to get W3C credential offer from json: $e");
+    }
   }
 
   W3cCredential process(ProcessW3cCredentialOptions options) {
