@@ -65,7 +65,7 @@ AnoncredsResult<CredentialDefinition> anoncredsCredentialDefinitionFromJson(
 }
 
 void anoncredsObjectFree(ObjectHandle handle) {
-  nativeAnoncredsObjectFree(handle.toInt());
+  nativeAnoncredsObjectFree(handle.handle);
 }
 
 AnoncredsResult<String> anoncredsObjectGetJson(ObjectHandle handle) {

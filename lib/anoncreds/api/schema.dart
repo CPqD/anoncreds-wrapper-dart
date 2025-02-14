@@ -1,20 +1,43 @@
-import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
-import 'package:anoncreds_wrapper_dart/anoncreds/object_handle.dart';
+import 'dart:convert';
 
-class Schema extends ObjectHandle {
-  Schema(super.handle);
+import '../types.dart';
+import '../anoncreds_object.dart';
+import '../register.dart';
 
-  static create({
-    required String name,
-    required String version,
-    required String issuerId,
-    required List<String> attributeNames,
-  }) {
-    throw NotImplementedException("Schema.create");
+class CreateSchemaOptions {
+  final String name;
+  final String version;
+  final String issuerId;
+  final List<String> attributeNames;
+
+  CreateSchemaOptions({
+    required this.name,
+    required this.version,
+    required this.issuerId,
+    required this.attributeNames,
+  });
+}
+
+class Schema extends AnoncredsObject {
+  Schema(int handle) : super(handle);
+
+  factory Schema.create(CreateSchemaOptions options) {
+    return Schema(
+      anoncreds
+              ?.createSchema(
+                name: options.name,
+                version: options.version,
+                issuerId: options.issuerId,
+                attributeNames: options.attributeNames,
+              )
+              .handle ??
+          0,
+    );
   }
 
-  // TODO
-  static Schema fromJson(Map<String, dynamic> json) {
-    throw NotImplementedException("Schema.fromJson");
+  factory Schema.fromJson(JsonObject json) {
+    return Schema(
+      anoncreds?.schemaFromJson(json: jsonEncode(json)).handle ?? 0,
+    );
   }
 }
