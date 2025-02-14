@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_native_functions.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_native_types.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_native_utils.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/enums/anoncreds_error_code.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
@@ -39,6 +40,23 @@ String anoncredsVersion() {
 
 void anoncredsObjectFree(ObjectHandle handle) {
   nativeAnoncredsObjectFree(handle.toInt());
+}
+
+AnoncredsResult<String> anoncredsObjectGetJson(ObjectHandle handle) {
+  Pointer<FfiByteBuffer> byteBufferPtr = calloc<FfiByteBuffer>();
+
+  try {
+    final result = nativeAnoncredsObjectGetJson(handle.toInt(), byteBufferPtr);
+
+    final errorCode = ErrorCode.fromInt(result);
+
+    final value =
+        (errorCode == ErrorCode.success) ? byteBufferToString(byteBufferPtr.ref) : "";
+
+    return AnoncredsResult<String>(errorCode, value);
+  } finally {
+    freeByteBufferPointer(byteBufferPtr);
+  }
 }
 
 AnoncredsResult<String> anoncredsObjectGetTypeName(ObjectHandle handle) {

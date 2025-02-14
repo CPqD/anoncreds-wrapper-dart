@@ -25,7 +25,7 @@
 - [ ] anoncreds_get_current_error
 - [ ] anoncreds_key_correctness_proof_from_json
 - [x] anoncreds_object_free
-- [ ] anoncreds_object_get_json
+- [x] anoncreds_object_get_json
 - [x] anoncreds_object_get_type_name
 - [ ] anoncreds_presentation_from_json
 - [ ] anoncreds_presentation_request_from_json
