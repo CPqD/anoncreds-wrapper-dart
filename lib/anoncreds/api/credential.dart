@@ -1,17 +1,16 @@
-import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 
-import 'credential_request.dart';
-import 'credential_request_metadata.dart';
-import 'revocation_registry_definition.dart';
-import 'w3c_credential.dart';
-import 'utils.dart';
 import '../anoncreds_object.dart';
+import '../object_handle.dart';
 import '../register.dart';
 import 'credential_definition.dart';
 import 'credential_definition_private.dart';
 import 'credential_offer.dart';
-import '../object_handle.dart';
+import 'credential_request.dart';
+import 'credential_request_metadata.dart';
+import 'revocation_registry_definition.dart';
+import 'utils.dart';
+import 'w3c_credential.dart';
 
 class CreateCredentialOptions {
   final dynamic credentialDefinition;
@@ -100,7 +99,7 @@ class Credential extends AnoncredsObject {
           : pushToArray(CredentialRequest.fromJson(options.credentialRequest).handle,
               objectHandles);
 
-      credential = anoncreds!
+      credential = anoncreds
           .createCredential(
             credentialDefinition: ObjectHandle(credentialDefinition),
             credentialDefinitionPrivate: ObjectHandle(credentialDefinitionPrivate),
@@ -121,7 +120,7 @@ class Credential extends AnoncredsObject {
 
   factory Credential.fromJson(Map<String, dynamic> json) {
     try {
-      return anoncredsCredentialFromJson(json).getValueOrException();
+      return anoncreds.credentialFromJson(json).getValueOrException();
     } catch (e) {
       throw AnoncredsException("Failed to get credential from json: $e");
     }
@@ -156,7 +155,7 @@ class Credential extends AnoncredsObject {
                       objectHandles)
                   : null;
 
-      credential = anoncreds!.processCredential(
+      credential = anoncreds.processCredential(
         credential: handle,
         credentialDefinition: ObjectHandle(credentialDefinition),
         credentialRequestMetadata: ObjectHandle(credentialRequestMetadata),
@@ -175,26 +174,26 @@ class Credential extends AnoncredsObject {
   }
 
   String get schemaId {
-    return anoncreds!.credentialGetAttribute(objectHandle: handle, name: 'schema_id');
+    return anoncreds.credentialGetAttribute(objectHandle: handle, name: 'schema_id');
   }
 
   String get credentialDefinitionId {
-    return anoncreds!.credentialGetAttribute(objectHandle: handle, name: 'cred_def_id');
+    return anoncreds.credentialGetAttribute(objectHandle: handle, name: 'cred_def_id');
   }
 
   String get revocationRegistryId {
-    return anoncreds!.credentialGetAttribute(objectHandle: handle, name: 'rev_reg_id');
+    return anoncreds.credentialGetAttribute(objectHandle: handle, name: 'rev_reg_id');
   }
 
   int? get revocationRegistryIndex {
-    String? index =
-        anoncreds?.credentialGetAttribute(objectHandle: handle, name: 'rev_reg_index');
-    return index != null ? int.parse(index) : null;
+    String index =
+        anoncreds.credentialGetAttribute(objectHandle: handle, name: 'rev_reg_index');
+    return int.parse(index);
   }
 
   W3cCredential toW3c(CredentialToW3cOptions options) {
     return W3cCredential(
-      anoncreds!
+      anoncreds
           .credentialToW3c(
             objectHandle: handle,
             issuerId: options.issuerId,
@@ -206,6 +205,6 @@ class Credential extends AnoncredsObject {
 
   static Credential fromW3c(CredentialFromW3cOptions options) {
     return Credential(
-        anoncreds!.credentialFromW3c(objectHandle: options.credential.handle).handle);
+        anoncreds.credentialFromW3c(objectHandle: options.credential.handle).handle);
   }
 }

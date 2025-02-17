@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/object_handle.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/register.dart';
 
 class AnoncredsObject {
   ObjectHandle handle;
@@ -11,7 +11,7 @@ class AnoncredsObject {
 
   Map<String, dynamic> toJson() {
     try {
-      final result = anoncredsObjectGetJson(handle).getValueOrException();
+      final result = anoncreds.objectGetJson(handle).getValueOrException();
 
       return jsonDecode(result);
     } catch (e) {

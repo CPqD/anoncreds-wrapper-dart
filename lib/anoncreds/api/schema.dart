@@ -1,4 +1,3 @@
-import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 
 import '../anoncreds_object.dart';
@@ -24,20 +23,19 @@ class Schema extends AnoncredsObject {
   factory Schema.create(CreateSchemaOptions options) {
     return Schema(
       anoncreds
-              ?.createSchema(
-                name: options.name,
-                version: options.version,
-                issuerId: options.issuerId,
-                attributeNames: options.attributeNames,
-              )
-              .handle ??
-          0,
+          .createSchema(
+            name: options.name,
+            version: options.version,
+            issuerId: options.issuerId,
+            attributeNames: options.attributeNames,
+          )
+          .handle,
     );
   }
 
   factory Schema.fromJson(Map<String, dynamic> json) {
     try {
-      return anoncredsSchemaFromJson(json).getValueOrException();
+      return anoncreds.schemaFromJson(json).getValueOrException();
     } catch (e) {
       throw AnoncredsException("Failed to get schema from json: $e");
     }

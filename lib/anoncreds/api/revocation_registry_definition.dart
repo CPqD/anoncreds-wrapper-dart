@@ -1,8 +1,7 @@
-import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 
-import '../object_handle.dart';
 import '../anoncreds_object.dart';
+import '../object_handle.dart';
 import '../register.dart';
 import 'credential_definition.dart';
 import 'utils.dart';
@@ -43,16 +42,15 @@ class RevocationRegistryDefinition extends AnoncredsObject {
                   CredentialDefinition.fromJson(options.credentialDefinition).handle,
                   objectHandles);
 
-      createReturnObj = anoncreds?.createRevocationRegistryDefinition(
-            credentialDefinition: credentialDefinition,
-            credentialDefinitionId: options.credentialDefinitionId,
-            tag: options.tag,
-            issuerId: options.issuerId,
-            revocationRegistryType: options.revocationRegistryType,
-            maximumCredentialNumber: options.maximumCredentialNumber,
-            tailsDirectoryPath: options.tailsDirectoryPath,
-          ) ??
-          {};
+      createReturnObj = anoncreds.createRevocationRegistryDefinition(
+        credentialDefinition: credentialDefinition,
+        credentialDefinitionId: options.credentialDefinitionId,
+        tag: options.tag,
+        issuerId: options.issuerId,
+        revocationRegistryType: options.revocationRegistryType,
+        maximumCredentialNumber: options.maximumCredentialNumber,
+        tailsDirectoryPath: options.tailsDirectoryPath,
+      );
     } finally {
       for (var handle in objectHandles) {
         handle.clear();
@@ -65,7 +63,7 @@ class RevocationRegistryDefinition extends AnoncredsObject {
 
   factory RevocationRegistryDefinition.fromJson(Map<String, dynamic> json) {
     try {
-      return anoncredsRevocationRegistryDefinitionFromJson(json).getValueOrException();
+      return anoncreds.revocationRegistryDefinitionFromJson(json).getValueOrException();
     } catch (e) {
       throw AnoncredsException(
           "Failed to get revocation registry definition from json: $e");
@@ -73,36 +71,32 @@ class RevocationRegistryDefinition extends AnoncredsObject {
   }
 
   String getId() {
-    return anoncreds?.revocationRegistryDefinitionGetAttribute(
-          objectHandle: handle,
-          name: 'id',
-        ) ??
-        '';
+    return anoncreds.revocationRegistryDefinitionGetAttribute(
+      objectHandle: handle,
+      name: 'id',
+    );
   }
 
   int getMaximumCredentialNumber() {
     return int.parse(
-      anoncreds?.revocationRegistryDefinitionGetAttribute(
-            objectHandle: handle,
-            name: 'max_cred_num',
-          ) ??
-          '0',
+      anoncreds.revocationRegistryDefinitionGetAttribute(
+        objectHandle: handle,
+        name: 'max_cred_num',
+      ),
     );
   }
 
   String getTailsHash() {
-    return anoncreds?.revocationRegistryDefinitionGetAttribute(
-          objectHandle: handle,
-          name: 'tails_hash',
-        ) ??
-        '';
+    return anoncreds.revocationRegistryDefinitionGetAttribute(
+      objectHandle: handle,
+      name: 'tails_hash',
+    );
   }
 
   String getTailsLocation() {
-    return anoncreds?.revocationRegistryDefinitionGetAttribute(
-          objectHandle: handle,
-          name: 'tails_location',
-        ) ??
-        '';
+    return anoncreds.revocationRegistryDefinitionGetAttribute(
+      objectHandle: handle,
+      name: 'tails_location',
+    );
   }
 }

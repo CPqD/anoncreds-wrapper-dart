@@ -1,4 +1,3 @@
-import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 
 import '../anoncreds_object.dart';
@@ -56,16 +55,15 @@ class CredentialRevocationState extends AnoncredsObject {
       ObjectHandle revocationStatusList = options.revocationStatusList.handle;
 
       credentialRevocationStateHandle = anoncreds
-              ?.createOrUpdateRevocationState(
-                revocationRegistryDefinition: revocationRegistryDefinition,
-                revocationStatusList: revocationStatusList,
-                revocationRegistryIndex: options.revocationRegistryIndex,
-                tailsPath: options.tailsPath,
-                oldRevocationStatusList: options.oldRevocationStatusList?.handle,
-                oldRevocationState: options.oldRevocationState?.handle,
-              )
-              .handle ??
-          0;
+          .createOrUpdateRevocationState(
+            revocationRegistryDefinition: revocationRegistryDefinition,
+            revocationStatusList: revocationStatusList,
+            revocationRegistryIndex: options.revocationRegistryIndex,
+            tailsPath: options.tailsPath,
+            oldRevocationStatusList: options.oldRevocationStatusList?.handle,
+            oldRevocationState: options.oldRevocationState?.handle,
+          )
+          .handle;
     } finally {
       for (var handle in objectHandles) {
         handle.clear();
@@ -77,23 +75,20 @@ class CredentialRevocationState extends AnoncredsObject {
 
   factory CredentialRevocationState.fromJson(Map<String, dynamic> json) {
     try {
-      return anoncredsRevocationStateFromJson(json).getValueOrException();
+      return anoncreds.revocationStateFromJson(json).getValueOrException();
     } catch (e) {
       throw AnoncredsException("Failed to get credential revocation state from json: $e");
     }
   }
 
   void update(UpdateRevocationStateOptions options) {
-    handle = ObjectHandle(anoncreds
-            ?.createOrUpdateRevocationState(
-              revocationRegistryDefinition: options.revocationRegistryDefinition.handle,
-              revocationStatusList: options.revocationStatusList.handle,
-              revocationRegistryIndex: options.revocationRegistryIndex,
-              tailsPath: options.tailsPath,
-              oldRevocationStatusList: options.oldRevocationStatusList.handle,
-              oldRevocationState: options.oldRevocationState.handle,
-            )
-            .handle ??
-        0);
+    anoncreds.createOrUpdateRevocationState(
+      revocationRegistryDefinition: options.revocationRegistryDefinition.handle,
+      revocationStatusList: options.revocationStatusList.handle,
+      revocationRegistryIndex: options.revocationRegistryIndex,
+      tailsPath: options.tailsPath,
+      oldRevocationStatusList: options.oldRevocationStatusList.handle,
+      oldRevocationState: options.oldRevocationState.handle,
+    );
   }
 }

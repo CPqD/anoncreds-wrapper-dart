@@ -1,8 +1,7 @@
-import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 
-import '../object_handle.dart';
 import '../anoncreds_object.dart';
+import '../object_handle.dart';
 import '../register.dart';
 import 'credential_definition.dart';
 import 'revocation_registry_definition.dart';
@@ -88,17 +87,16 @@ class RevocationStatusList extends AnoncredsObject {
               objectHandles);
 
       revocationStatusListHandle = anoncreds
-              ?.createRevocationStatusList(
-                credentialDefinition: credentialDefinition,
-                revocationRegistryDefinitionId: options.revocationRegistryDefinitionId,
-                revocationRegistryDefinition: revocationRegistryDefinition,
-                revocationRegistryDefinitionPrivate: revocationRegistryDefinitionPrivate,
-                issuerId: options.issuerId,
-                issuanceByDefault: options.issuanceByDefault,
-                timestamp: options.timestamp,
-              )
-              .handle ??
-          0;
+          .createRevocationStatusList(
+            credentialDefinition: credentialDefinition,
+            revocationRegistryDefinitionId: options.revocationRegistryDefinitionId,
+            revocationRegistryDefinition: revocationRegistryDefinition,
+            revocationRegistryDefinitionPrivate: revocationRegistryDefinitionPrivate,
+            issuerId: options.issuerId,
+            issuanceByDefault: options.issuanceByDefault,
+            timestamp: options.timestamp,
+          )
+          .handle;
     } finally {
       for (var handle in objectHandles) {
         handle.clear();
@@ -110,14 +108,14 @@ class RevocationStatusList extends AnoncredsObject {
 
   factory RevocationStatusList.fromJson(Map<String, dynamic> json) {
     try {
-      return anoncredsRevocationStatusListFromJson(json).getValueOrException();
+      return anoncreds.revocationStatusListFromJson(json).getValueOrException();
     } catch (e) {
       throw AnoncredsException("Failed to get revocation status list from json: $e");
     }
   }
 
   void updateTimestamp(UpdateRevocationStatusListTimestampOptions options) {
-    handle = anoncreds!.updateRevocationStatusListTimestampOnly(
+    handle = anoncreds.updateRevocationStatusListTimestampOnly(
       timestamp: options.timestamp,
       currentRevocationStatusList: handle,
     );
@@ -151,16 +149,15 @@ class RevocationStatusList extends AnoncredsObject {
                   .handle,
               objectHandles);
 
-      handle = anoncreds?.updateRevocationStatusList(
-            credentialDefinition: credentialDefinition,
-            revocationRegistryDefinition: revocationRegistryDefinition,
-            revocationRegistryDefinitionPrivate: revocationRegistryDefinitionPrivate,
-            currentRevocationStatusList: handle,
-            issued: options.issued,
-            revoked: options.revoked,
-            timestamp: options.timestamp,
-          ) ??
-          ObjectHandle(0);
+      handle = anoncreds.updateRevocationStatusList(
+        credentialDefinition: credentialDefinition,
+        revocationRegistryDefinition: revocationRegistryDefinition,
+        revocationRegistryDefinitionPrivate: revocationRegistryDefinitionPrivate,
+        currentRevocationStatusList: handle,
+        issued: options.issued,
+        revoked: options.revoked,
+        timestamp: options.timestamp,
+      );
     } finally {
       for (var handle in objectHandles) {
         handle.clear();

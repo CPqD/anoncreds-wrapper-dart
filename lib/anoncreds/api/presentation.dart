@@ -1,15 +1,14 @@
-import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 
 import '../anoncreds.dart';
-import 'revocation_registry.dart';
-import '../object_handle.dart';
 import '../anoncreds_object.dart';
+import '../object_handle.dart';
 import '../register.dart';
 import 'credential.dart';
 import 'credential_definition.dart';
 import 'credential_revocation_state.dart';
 import 'presentation_request.dart';
+import 'revocation_registry.dart';
 import 'revocation_registry_definition.dart';
 import 'revocation_status_list.dart';
 import 'schema.dart';
@@ -117,48 +116,47 @@ class Presentation extends AnoncredsObject {
               objectHandles);
 
       presentationHandle = anoncreds
-              ?.createPresentation(
-                presentationRequest: ObjectHandle(presentationRequest),
-                credentials: options.credentials.map((item) {
-                  return NativeCredentialEntry(
-                    credential: item.credential is Credential
-                        ? item.credential.handle
-                        : pushToArray(
-                            Credential.fromJson(item.credential).handle, objectHandles),
-                    revocationState: item.revocationState is CredentialRevocationState
-                        ? item.revocationState.handle
-                        : item.revocationState != null
-                            ? pushToArray(
-                                CredentialRevocationState.fromJson(item.revocationState)
-                                    .handle,
-                                objectHandles)
-                            : null,
-                    timestamp: item.timestamp,
-                  );
-                }).toList(),
-                credentialsProve: options.credentialsProve.map((item) {
-                  return NativeCredentialProve(
-                      entryIndex: item.entryIndex,
-                      referent: item.referent,
-                      isPredicate: item.isPredicate,
-                      reveal: item.reveal);
-                }).toList(),
-                selfAttest: options.selfAttest,
-                linkSecret: options.linkSecret,
-                schemas: options.schemas.map((id, object) {
-                  ObjectHandle objectHandle =
-                      object is Schema ? object.handle : Schema.fromJson(object).handle;
-                  return MapEntry(id, objectHandle);
-                }),
-                credentialDefinitions: options.credentialDefinitions.map((id, object) {
-                  ObjectHandle objectHandle = object is CredentialDefinition
-                      ? object.handle
-                      : CredentialDefinition.fromJson(object).handle;
-                  return MapEntry(id, objectHandle);
-                }),
-              )
-              .handle ??
-          0;
+          .createPresentation(
+            presentationRequest: ObjectHandle(presentationRequest),
+            credentials: options.credentials.map((item) {
+              return NativeCredentialEntry(
+                credential: item.credential is Credential
+                    ? item.credential.handle
+                    : pushToArray(
+                        Credential.fromJson(item.credential).handle, objectHandles),
+                revocationState: item.revocationState is CredentialRevocationState
+                    ? item.revocationState.handle
+                    : item.revocationState != null
+                        ? pushToArray(
+                            CredentialRevocationState.fromJson(item.revocationState)
+                                .handle,
+                            objectHandles)
+                        : null,
+                timestamp: item.timestamp,
+              );
+            }).toList(),
+            credentialsProve: options.credentialsProve.map((item) {
+              return NativeCredentialProve(
+                  entryIndex: item.entryIndex,
+                  referent: item.referent,
+                  isPredicate: item.isPredicate,
+                  reveal: item.reveal);
+            }).toList(),
+            selfAttest: options.selfAttest,
+            linkSecret: options.linkSecret,
+            schemas: options.schemas.map((id, object) {
+              ObjectHandle objectHandle =
+                  object is Schema ? object.handle : Schema.fromJson(object).handle;
+              return MapEntry(id, objectHandle);
+            }),
+            credentialDefinitions: options.credentialDefinitions.map((id, object) {
+              ObjectHandle objectHandle = object is CredentialDefinition
+                  ? object.handle
+                  : CredentialDefinition.fromJson(object).handle;
+              return MapEntry(id, objectHandle);
+            }),
+          )
+          .handle;
     } finally {
       for (var handle in objectHandles) {
         handle.clear();
@@ -170,7 +168,7 @@ class Presentation extends AnoncredsObject {
 
   factory Presentation.fromJson(Map<String, dynamic> json) {
     try {
-      return anoncredsPresentationFromJson(json).getValueOrException();
+      return anoncreds.presentationFromJson(json).getValueOrException();
     } catch (e) {
       throw AnoncredsException("Failed to get presentation from json: $e");
     }
@@ -199,40 +197,39 @@ class Presentation extends AnoncredsObject {
                   PresentationRequest.fromJson(options.presentationRequest).handle,
                   objectHandles);
 
-      verified = anoncreds?.verifyPresentation(
-            presentation: handle,
-            presentationRequest: presentationRequest,
-            schemas: schemas.map((o) {
-              return o is Schema ? o.handle : Schema.fromJson(o).handle;
-            }).toList(),
-            schemaIds: schemaIds,
-            credentialDefinitions: credentialDefinitions.map((o) {
-              return o is CredentialDefinition
-                  ? o.handle
-                  : CredentialDefinition.fromJson(o).handle;
-            }).toList(),
-            credentialDefinitionIds: credentialDefinitionIds,
-            revocationRegistryDefinitions: revocationRegistryDefinitions?.map((o) {
-              return o is RevocationRegistryDefinition
-                  ? o.handle
-                  : RevocationRegistryDefinition.fromJson(o).handle;
-            }).toList(),
-            revocationRegistryDefinitionIds: revocationRegistryDefinitionIds,
-            revocationStatusLists: options.revocationStatusLists?.map((o) {
-              return o is RevocationStatusList
-                  ? o.handle
-                  : RevocationStatusList.fromJson(o).handle;
-            }).toList(),
-            nonRevokedIntervalOverrides: options.nonRevokedIntervalOverrides?.map((item) {
-              return NativeNonRevokedIntervalOverride(
-                revocationRegistryDefinitionId: item.revocationRegistryDefinitionId,
-                requestedFromTimestamp: item.requestedFromTimestamp,
-                overrideRevocationStatusListTimestamp:
-                    item.overrideRevocationStatusListTimestamp,
-              );
-            }).toList(),
-          ) ??
-          false;
+      verified = anoncreds.verifyPresentation(
+        presentation: handle,
+        presentationRequest: presentationRequest,
+        schemas: schemas.map((o) {
+          return o is Schema ? o.handle : Schema.fromJson(o).handle;
+        }).toList(),
+        schemaIds: schemaIds,
+        credentialDefinitions: credentialDefinitions.map((o) {
+          return o is CredentialDefinition
+              ? o.handle
+              : CredentialDefinition.fromJson(o).handle;
+        }).toList(),
+        credentialDefinitionIds: credentialDefinitionIds,
+        revocationRegistryDefinitions: revocationRegistryDefinitions?.map((o) {
+          return o is RevocationRegistryDefinition
+              ? o.handle
+              : RevocationRegistryDefinition.fromJson(o).handle;
+        }).toList(),
+        revocationRegistryDefinitionIds: revocationRegistryDefinitionIds,
+        revocationStatusLists: options.revocationStatusLists?.map((o) {
+          return o is RevocationStatusList
+              ? o.handle
+              : RevocationStatusList.fromJson(o).handle;
+        }).toList(),
+        nonRevokedIntervalOverrides: options.nonRevokedIntervalOverrides?.map((item) {
+          return NativeNonRevokedIntervalOverride(
+            revocationRegistryDefinitionId: item.revocationRegistryDefinitionId,
+            requestedFromTimestamp: item.requestedFromTimestamp,
+            overrideRevocationStatusListTimestamp:
+                item.overrideRevocationStatusListTimestamp,
+          );
+        }).toList(),
+      );
     } finally {
       for (var handle in objectHandles) {
         handle.clear();

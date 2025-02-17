@@ -1,5 +1,5 @@
-import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/register.dart';
 
 class ObjectHandle {
   final int handle;
@@ -8,7 +8,7 @@ class ObjectHandle {
 
   String typeName() {
     try {
-      return anoncredsObjectGetTypeName(this).getValueOrException();
+      return anoncreds.objectGetTypeName(this).getValueOrException();
     } catch (e) {
       throw AnoncredsException('Failed to get type name');
     }
@@ -16,7 +16,7 @@ class ObjectHandle {
 
   void clear() {
     try {
-      return anoncredsObjectFree(this);
+      return anoncreds.objectFree(this);
     } catch (e) {
       throw AnoncredsException('Failed to free object');
     }

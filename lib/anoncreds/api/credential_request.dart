@@ -1,11 +1,10 @@
-import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 
 import '../anoncreds_object.dart';
+import '../object_handle.dart';
 import '../register.dart';
 import 'credential_definition.dart';
 import 'credential_offer.dart';
-import '../object_handle.dart';
 import 'utils.dart';
 
 class CreateCredentialRequestOptions {
@@ -45,15 +44,14 @@ class CredentialRequest extends AnoncredsObject {
           : pushToArray(
               CredentialOffer.fromJson(options.credentialOffer).handle, objectHandles);
 
-      createReturnObj = anoncreds?.createCredentialRequest(
-            entropy: options.entropy,
-            proverDid: options.proverDid,
-            credentialDefinition: ObjectHandle(credentialDefinition),
-            linkSecret: options.linkSecret,
-            linkSecretId: options.linkSecretId,
-            credentialOffer: ObjectHandle(credentialOffer),
-          ) ??
-          {};
+      createReturnObj = anoncreds.createCredentialRequest(
+        entropy: options.entropy,
+        proverDid: options.proverDid,
+        credentialDefinition: ObjectHandle(credentialDefinition),
+        linkSecret: options.linkSecret,
+        linkSecretId: options.linkSecretId,
+        credentialOffer: ObjectHandle(credentialOffer),
+      );
     } finally {
       for (var handle in objectHandles) {
         handle.clear();
@@ -65,7 +63,7 @@ class CredentialRequest extends AnoncredsObject {
 
   factory CredentialRequest.fromJson(Map<String, dynamic> json) {
     try {
-      return anoncredsCredentialRequestFromJson(json).getValueOrException();
+      return anoncreds.credentialRequestFromJson(json).getValueOrException();
     } catch (e) {
       throw AnoncredsException("Failed to get credential offer from json: $e");
     }

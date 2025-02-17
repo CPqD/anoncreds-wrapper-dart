@@ -1,3 +1,31 @@
+import 'dart:convert';
+import 'dart:ffi';
+
+import 'package:anoncreds_wrapper_dart/anoncreds/api/credential.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/api/credential_definition.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/api/credential_definition_private.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/api/credential_offer.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/api/credential_request.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/api/credential_request_metadata.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/api/credential_revocation_state.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/api/key_correctness_proof.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/api/presentation.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/api/presentation_request.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/api/revocation_registry.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/api/revocation_registry_definition.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/api/revocation_registry_definition_private.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/api/revocation_status_list.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/api/schema.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/api/w3c_credential.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/api/w3c_presentation.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_native_functions.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_native_types.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_native_utils.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/enums/error_code.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/enums/signature_type.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/types.dart';
+import 'package:ffi/ffi.dart';
+
 import 'object_handle.dart';
 
 class NativeCredentialEntry {
@@ -79,12 +107,12 @@ abstract class IAnoncreds {
     required List<String> attributeNames,
   });
 
-  Map<String, ObjectHandle> createCredentialDefinition({
+  AnoncredsResult<CredentialDefinitionCreation> createCredentialDefinition({
     required String schemaId,
-    required ObjectHandle schema,
+    required ObjectHandle schemaHandle,
     required String tag,
     required String issuerId,
-    required String signatureType,
+    required SignatureType signatureType,
     required bool supportRevocation,
   });
 
@@ -125,7 +153,7 @@ abstract class IAnoncreds {
     required ObjectHandle credentialOffer,
   });
 
-  String createLinkSecret();
+  AnoncredsResult<String> createLinkSecret();
 
   ObjectHandle createPresentation({
     required ObjectHandle presentationRequest,
@@ -204,77 +232,51 @@ abstract class IAnoncreds {
     required String name,
   });
 
-  ObjectHandle presentationRequestFromJson({
-    required String json,
-  });
+  AnoncredsResult<PresentationRequest> presentationRequestFromJson(
+      Map<String, dynamic> json);
 
-  ObjectHandle revocationRegistryDefinitionFromJson({
-    required String json,
-  });
+  AnoncredsResult<RevocationRegistryDefinition> revocationRegistryDefinitionFromJson(
+      Map<String, dynamic> json);
 
-  ObjectHandle revocationRegistryFromJson({
-    required String json,
-  });
+  AnoncredsResult<RevocationRegistry> revocationRegistryFromJson(
+      Map<String, dynamic> json);
 
-  ObjectHandle revocationStatusListFromJson({
-    required String json,
-  });
+  AnoncredsResult<RevocationStatusList> revocationStatusListFromJson(
+      Map<String, dynamic> json);
 
-  ObjectHandle presentationFromJson({
-    required String json,
-  });
+  AnoncredsResult<Presentation> presentationFromJson(Map<String, dynamic> json);
 
-  ObjectHandle credentialOfferFromJson({
-    required String json,
-  });
+  AnoncredsResult<CredentialOffer> credentialOfferFromJson(Map<String, dynamic> json);
 
-  ObjectHandle schemaFromJson({
-    required String json,
-  });
+  AnoncredsResult<Schema> schemaFromJson(Map<String, dynamic> json);
 
-  ObjectHandle credentialRequestFromJson({
-    required String json,
-  });
+  AnoncredsResult<CredentialRequest> credentialRequestFromJson(Map<String, dynamic> json);
 
-  ObjectHandle credentialRequestMetadataFromJson({
-    required String json,
-  });
+  AnoncredsResult<CredentialRequestMetadata> credentialRequestMetadataFromJson(
+      Map<String, dynamic> json);
 
-  ObjectHandle credentialFromJson({
-    required String json,
-  });
+  AnoncredsResult<Credential> credentialFromJson(Map<String, dynamic> json);
 
-  ObjectHandle revocationRegistryDefinitionPrivateFromJson({
-    required String json,
-  });
+  AnoncredsResult<RevocationRegistryDefinitionPrivate>
+      revocationRegistryDefinitionPrivateFromJson(Map<String, dynamic> json);
 
-  ObjectHandle revocationStateFromJson({
-    required String json,
-  });
+  AnoncredsResult<CredentialRevocationState> revocationStateFromJson(
+      Map<String, dynamic> json);
 
-  ObjectHandle credentialDefinitionFromJson({
-    required String json,
-  });
+  AnoncredsResult<CredentialDefinition> credentialDefinitionFromJson(
+      Map<String, dynamic> json);
 
-  ObjectHandle credentialDefinitionPrivateFromJson({
-    required String json,
-  });
+  AnoncredsResult<CredentialDefinitionPrivate> credentialDefinitionPrivateFromJson(
+      Map<String, dynamic> json);
 
-  ObjectHandle keyCorrectnessProofFromJson({
-    required String json,
-  });
+  AnoncredsResult<KeyCorrectnessProof> keyCorrectnessProofFromJson(
+      Map<String, dynamic> json);
 
-  String getJson({
-    required ObjectHandle objectHandle,
-  });
+  void objectFree(ObjectHandle handle);
 
-  String getTypeName({
-    required ObjectHandle objectHandle,
-  });
+  AnoncredsResult<String> objectGetJson(ObjectHandle handle);
 
-  void objectFree({
-    required ObjectHandle objectHandle,
-  });
+  AnoncredsResult<String> objectGetTypeName(ObjectHandle handle);
 
   ObjectHandle createW3cCredential({
     required ObjectHandle credentialDefinition,
@@ -317,13 +319,9 @@ abstract class IAnoncreds {
     List<NativeNonRevokedIntervalOverride>? nonRevokedIntervalOverrides,
   });
 
-  ObjectHandle w3cPresentationFromJson({
-    required String json,
-  });
+  AnoncredsResult<W3cPresentation> w3cPresentationFromJson(Map<String, dynamic> json);
 
-  ObjectHandle w3cCredentialFromJson({
-    required String json,
-  });
+  AnoncredsResult<W3cCredential> w3cCredentialFromJson(Map<String, dynamic> json);
 
   ObjectHandle credentialToW3c({
     required ObjectHandle objectHandle,
@@ -360,15 +358,59 @@ class Anoncreds implements IAnoncreds {
   }
 
   @override
-  Map<String, ObjectHandle> createCredentialDefinition(
-      {required String schemaId,
-      required ObjectHandle schema,
-      required String tag,
-      required String issuerId,
-      required String signatureType,
-      required bool supportRevocation}) {
-    // TODO: implement createCredentialDefinition
-    throw UnimplementedError();
+  AnoncredsResult<CredentialDefinitionCreation> createCredentialDefinition({
+    required String schemaId,
+    required ObjectHandle schemaHandle,
+    required String tag,
+    required String issuerId,
+    required SignatureType signatureType,
+    required bool supportRevocation,
+  }) {
+    Pointer<Int64> credDefPtr = calloc<Int64>();
+    Pointer<Int64> credDefPvtPtr = calloc<Int64>();
+    Pointer<Int64> keyProofPtr = calloc<Int64>();
+
+    Pointer<Utf8> schemaIdPtr = nullptr;
+    Pointer<Utf8> tagPtr = nullptr;
+    Pointer<Utf8> issuerIdPtr = nullptr;
+    Pointer<Utf8> sigTypePtr = nullptr;
+
+    try {
+      schemaIdPtr = schemaId.toNativeUtf8();
+      tagPtr = tag.toNativeUtf8();
+      issuerIdPtr = issuerId.toNativeUtf8();
+      sigTypePtr = signatureType.value.toNativeUtf8();
+
+      final initialResult = nativeAnoncredsCreateCredentialDefinition(
+        schemaIdPtr,
+        schemaHandle.toInt(),
+        tagPtr,
+        issuerIdPtr,
+        sigTypePtr,
+        boolToInt(supportRevocation),
+        credDefPtr,
+        credDefPvtPtr,
+        keyProofPtr,
+      );
+
+      final errorCode = ErrorCode.fromInt(initialResult);
+
+      final value = CredentialDefinitionCreation(
+        CredentialDefinition(credDefPtr.value),
+        CredentialDefinitionPrivate(credDefPvtPtr.value),
+        KeyCorrectnessProof(keyProofPtr.value),
+      );
+
+      return AnoncredsResult(errorCode, value);
+    } finally {
+      freePointer(credDefPtr);
+      freePointer(credDefPvtPtr);
+      freePointer(keyProofPtr);
+      freePointer(schemaIdPtr);
+      freePointer(tagPtr);
+      freePointer(issuerIdPtr);
+      freePointer(sigTypePtr);
+    }
   }
 
   @override
@@ -393,9 +435,17 @@ class Anoncreds implements IAnoncreds {
   }
 
   @override
-  String createLinkSecret() {
-    // TODO: implement createLinkSecret
-    throw UnimplementedError();
+  AnoncredsResult<String> createLinkSecret() {
+    Pointer<Pointer<Utf8>> resultPtrPointer = calloc<Pointer<Utf8>>();
+    try {
+      final result = nativeAnoncredsCreateLinkSecret(resultPtrPointer);
+      final errorCode = ErrorCode.fromInt(result);
+      final value =
+          (errorCode == ErrorCode.success) ? resultPtrPointer.value.toDartString() : "";
+      return AnoncredsResult<String>(errorCode, value);
+    } finally {
+      freeDoublePointer(resultPtrPointer);
+    }
   }
 
   @override
@@ -486,21 +536,26 @@ class Anoncreds implements IAnoncreds {
   }
 
   @override
-  ObjectHandle credentialDefinitionFromJson({required String json}) {
-    // TODO: implement credentialDefinitionFromJson
-    throw UnimplementedError();
+  AnoncredsResult<CredentialDefinition> credentialDefinitionFromJson(
+      Map<String, dynamic> json) {
+    final result = _fromJson(json, nativeAnoncredsCredentialDefinitionFromJson);
+
+    return AnoncredsResult(result.errorCode, CredentialDefinition(result.value));
   }
 
   @override
-  ObjectHandle credentialDefinitionPrivateFromJson({required String json}) {
-    // TODO: implement credentialDefinitionPrivateFromJson
-    throw UnimplementedError();
+  AnoncredsResult<CredentialDefinitionPrivate> credentialDefinitionPrivateFromJson(
+      Map<String, dynamic> json) {
+    final result = _fromJson(json, nativeAnoncredsCredentialDefinitionPrivateFromJson);
+
+    return AnoncredsResult(result.errorCode, CredentialDefinitionPrivate(result.value));
   }
 
   @override
-  ObjectHandle credentialFromJson({required String json}) {
-    // TODO: implement credentialFromJson
-    throw UnimplementedError();
+  AnoncredsResult<Credential> credentialFromJson(Map<String, dynamic> json) {
+    final result = _fromJson(json, nativeAnoncredsCredentialFromJson);
+
+    return AnoncredsResult(result.errorCode, Credential(result.value));
   }
 
   @override
@@ -517,21 +572,26 @@ class Anoncreds implements IAnoncreds {
   }
 
   @override
-  ObjectHandle credentialOfferFromJson({required String json}) {
-    // TODO: implement credentialOfferFromJson
-    throw UnimplementedError();
+  AnoncredsResult<CredentialOffer> credentialOfferFromJson(Map<String, dynamic> json) {
+    final result = _fromJson(json, nativeAnoncredsCredentialOfferFromJson);
+
+    return AnoncredsResult(result.errorCode, CredentialOffer(result.value));
   }
 
   @override
-  ObjectHandle credentialRequestFromJson({required String json}) {
-    // TODO: implement credentialRequestFromJson
-    throw UnimplementedError();
+  AnoncredsResult<CredentialRequest> credentialRequestFromJson(
+      Map<String, dynamic> json) {
+    final result = _fromJson(json, nativeAnoncredsCredentialRequestFromJson);
+
+    return AnoncredsResult(result.errorCode, CredentialRequest(result.value));
   }
 
   @override
-  ObjectHandle credentialRequestMetadataFromJson({required String json}) {
-    // TODO: implement credentialRequestMetadataFromJson
-    throw UnimplementedError();
+  AnoncredsResult<CredentialRequestMetadata> credentialRequestMetadataFromJson(
+      Map<String, dynamic> json) {
+    final result = _fromJson(json, nativeAnoncredsCredentialRequestMetadataFromJson);
+
+    return AnoncredsResult(result.errorCode, CredentialRequestMetadata(result.value));
   }
 
   @override
@@ -562,38 +622,70 @@ class Anoncreds implements IAnoncreds {
   }
 
   @override
-  String getJson({required ObjectHandle objectHandle}) {
-    // TODO: implement getJson
-    throw UnimplementedError();
+  AnoncredsResult<KeyCorrectnessProof> keyCorrectnessProofFromJson(
+      Map<String, dynamic> json) {
+    final result = _fromJson(json, nativeAnoncredsKeyCorrectnessProofFromJson);
+
+    return AnoncredsResult(result.errorCode, KeyCorrectnessProof(result.value));
   }
 
   @override
-  String getTypeName({required ObjectHandle objectHandle}) {
-    // TODO: implement getTypeName
-    throw UnimplementedError();
+  void objectFree(ObjectHandle handle) {
+    nativeAnoncredsObjectFree(handle.handle);
   }
 
   @override
-  ObjectHandle keyCorrectnessProofFromJson({required String json}) {
-    // TODO: implement keyCorrectnessProofFromJson
-    throw UnimplementedError();
+  AnoncredsResult<String> objectGetJson(ObjectHandle handle) {
+    Pointer<FfiByteBuffer> byteBufferPtr = calloc<FfiByteBuffer>();
+
+    try {
+      final result = nativeAnoncredsObjectGetJson(handle.toInt(), byteBufferPtr);
+
+      final errorCode = ErrorCode.fromInt(result);
+
+      final value =
+          (errorCode == ErrorCode.success) ? byteBufferToString(byteBufferPtr.ref) : "";
+
+      return AnoncredsResult<String>(errorCode, value);
+    } finally {
+      freeByteBufferPointer(byteBufferPtr);
+    }
   }
 
   @override
-  void objectFree({required ObjectHandle objectHandle}) {
-    // TODO: implement objectFree
+  AnoncredsResult<String> objectGetTypeName(ObjectHandle handle) {
+    Pointer<Pointer<Utf8>> resultPtrPointer = calloc<Pointer<Utf8>>();
+
+    try {
+      final result = nativeAnoncredsObjectGetTypeName(
+        handle.toInt(),
+        resultPtrPointer,
+      );
+
+      final errorCode = ErrorCode.fromInt(result);
+
+      final String value =
+          (errorCode == ErrorCode.success) ? resultPtrPointer.value.toDartString() : "";
+
+      return AnoncredsResult<String>(errorCode, value);
+    } finally {
+      freeDoublePointer(resultPtrPointer);
+    }
   }
 
   @override
-  ObjectHandle presentationFromJson({required String json}) {
-    // TODO: implement presentationFromJson
-    throw UnimplementedError();
+  AnoncredsResult<Presentation> presentationFromJson(Map<String, dynamic> json) {
+    final result = _fromJson(json, nativeAnoncredsPresentationFromJson);
+
+    return AnoncredsResult(result.errorCode, Presentation(result.value));
   }
 
   @override
-  ObjectHandle presentationRequestFromJson({required String json}) {
-    // TODO: implement presentationRequestFromJson
-    throw UnimplementedError();
+  AnoncredsResult<PresentationRequest> presentationRequestFromJson(
+      Map<String, dynamic> json) {
+    final result = _fromJson(json, nativeAnoncredsPresentationRequestFromJson);
+
+    return AnoncredsResult(result.errorCode, PresentationRequest(result.value));
   }
 
   @override
@@ -619,9 +711,11 @@ class Anoncreds implements IAnoncreds {
   }
 
   @override
-  ObjectHandle revocationRegistryDefinitionFromJson({required String json}) {
-    // TODO: implement revocationRegistryDefinitionFromJson
-    throw UnimplementedError();
+  AnoncredsResult<RevocationRegistryDefinition> revocationRegistryDefinitionFromJson(
+      Map<String, dynamic> json) {
+    final result = _fromJson(json, nativeAnoncredsRevocationRegistryDefinitionFromJson);
+
+    return AnoncredsResult(result.errorCode, RevocationRegistryDefinition(result.value));
   }
 
   @override
@@ -632,33 +726,44 @@ class Anoncreds implements IAnoncreds {
   }
 
   @override
-  ObjectHandle revocationRegistryDefinitionPrivateFromJson({required String json}) {
-    // TODO: implement revocationRegistryDefinitionPrivateFromJson
-    throw UnimplementedError();
+  AnoncredsResult<RevocationRegistryDefinitionPrivate>
+      revocationRegistryDefinitionPrivateFromJson(Map<String, dynamic> json) {
+    final result =
+        _fromJson(json, nativeAnoncredsRevocationRegistryDefinitionPrivateFromJson);
+
+    return AnoncredsResult(
+        result.errorCode, RevocationRegistryDefinitionPrivate(result.value));
   }
 
   @override
-  ObjectHandle revocationRegistryFromJson({required String json}) {
-    // TODO: implement revocationRegistryFromJson
-    throw UnimplementedError();
+  AnoncredsResult<RevocationRegistry> revocationRegistryFromJson(
+      Map<String, dynamic> json) {
+    final result = _fromJson(json, nativeAnoncredsRevocationRegistryFromJson);
+
+    return AnoncredsResult(result.errorCode, RevocationRegistry(result.value));
   }
 
   @override
-  ObjectHandle revocationStateFromJson({required String json}) {
-    // TODO: implement revocationStateFromJson
-    throw UnimplementedError();
+  AnoncredsResult<CredentialRevocationState> revocationStateFromJson(
+      Map<String, dynamic> json) {
+    final result = _fromJson(json, nativeAnoncredsRevocationStateFromJson);
+
+    return AnoncredsResult(result.errorCode, CredentialRevocationState(result.value));
   }
 
   @override
-  ObjectHandle revocationStatusListFromJson({required String json}) {
-    // TODO: implement revocationStatusListFromJson
-    throw UnimplementedError();
+  AnoncredsResult<RevocationStatusList> revocationStatusListFromJson(
+      Map<String, dynamic> json) {
+    final result = _fromJson(json, nativeAnoncredsRevocationStateFromJson);
+
+    return AnoncredsResult(result.errorCode, RevocationStatusList(result.value));
   }
 
   @override
-  ObjectHandle schemaFromJson({required String json}) {
-    // TODO: implement schemaFromJson
-    throw UnimplementedError();
+  AnoncredsResult<Schema> schemaFromJson(Map<String, dynamic> json) {
+    final result = _fromJson(json, nativeAnoncredsSchemaFromJson);
+
+    return AnoncredsResult(result.errorCode, Schema(result.value));
   }
 
   @override
@@ -720,14 +825,21 @@ class Anoncreds implements IAnoncreds {
 
   @override
   String version() {
-    // TODO: implement version
-    throw UnimplementedError();
+    Pointer<Utf8> resultPointer = nullptr;
+
+    try {
+      resultPointer = nativeAnoncredsVersion();
+      return resultPointer.toDartString();
+    } finally {
+      freePointer(resultPointer);
+    }
   }
 
   @override
-  ObjectHandle w3cCredentialFromJson({required String json}) {
-    // TODO: implement w3cCredentialFromJson
-    throw UnimplementedError();
+  AnoncredsResult<W3cCredential> w3cCredentialFromJson(Map<String, dynamic> json) {
+    final result = _fromJson(json, nativeAnoncredsW3cCredentialFromJson);
+
+    return AnoncredsResult(result.errorCode, W3cCredential(result.value));
   }
 
   @override
@@ -745,8 +857,34 @@ class Anoncreds implements IAnoncreds {
   }
 
   @override
-  ObjectHandle w3cPresentationFromJson({required String json}) {
-    // TODO: implement w3cPresentationFromJson
-    throw UnimplementedError();
+  AnoncredsResult<W3cPresentation> w3cPresentationFromJson(Map<String, dynamic> json) {
+    final result = _fromJson(json, nativeAnoncredsW3cPresentationFromJson);
+
+    return AnoncredsResult(result.errorCode, W3cPresentation(result.value));
+  }
+
+  AnoncredsResult<int> _fromJson(
+    Map<String, dynamic> json,
+    int Function(FfiByteBuffer, Pointer<Int64>) nativeFn,
+  ) {
+    Pointer<Int64> handlePtr = calloc<Int64>();
+
+    Pointer<FfiByteBuffer> byteBufferPtr = nullptr;
+
+    try {
+      byteBufferPtr = stringToByteBuffer(jsonEncode(json));
+
+      final errorCode = ErrorCode.fromInt(nativeFn(
+        byteBufferPtr.ref,
+        handlePtr,
+      ));
+
+      final handle = (errorCode == ErrorCode.success) ? handlePtr.value : 0;
+
+      return AnoncredsResult(errorCode, handle);
+    } finally {
+      freePointer(handlePtr);
+      freeByteBufferPointer(byteBufferPtr);
+    }
   }
 }

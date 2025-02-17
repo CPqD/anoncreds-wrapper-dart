@@ -1,15 +1,16 @@
 // ignore_for_file: avoid_print
 
 import 'package:anoncreds_wrapper_dart/anoncreds/api/credential_definition.dart';
-import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/types.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/enums/error_code.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/enums/signature_type.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/register.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
   group('Anoncreds', () {
     test('Get Version', () async {
-      final result = anoncredsVersion();
+      final result = anoncreds.version();
       print(result);
 
       expect(result, equals('0.2.0'));
@@ -52,10 +53,10 @@ void main() {
 }
 
 AnoncredsResult<String> createLinkSecretTest() {
-  final result = anoncredsCreateLinkSecret();
+  final result = anoncreds.createLinkSecret();
 
   printAnoncredsResult('Create Link Secret', result);
-  
+
   expect(result.errorCode, equals(ErrorCode.success));
   expect(result.value, isNotNull);
   expect(result.value, isA<String>());

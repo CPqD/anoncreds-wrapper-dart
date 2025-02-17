@@ -1,5 +1,5 @@
-import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/register.dart';
 
 import '../anoncreds_object.dart';
 
@@ -8,7 +8,8 @@ class RevocationRegistryDefinitionPrivate extends AnoncredsObject {
 
   factory RevocationRegistryDefinitionPrivate.fromJson(Map<String, dynamic> json) {
     try {
-      return anoncredsRevocationRegistryDefinitionPrivateFromJson(json)
+      return anoncreds
+          .revocationRegistryDefinitionPrivateFromJson(json)
           .getValueOrException();
     } catch (e) {
       throw AnoncredsException(

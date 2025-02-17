@@ -1,9 +1,7 @@
-import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 
-import 'credential_revocation_config.dart';
-import '../object_handle.dart';
 import '../anoncreds_object.dart';
+import '../object_handle.dart';
 import '../register.dart';
 import 'credential.dart';
 import 'credential_definition.dart';
@@ -11,6 +9,7 @@ import 'credential_definition_private.dart';
 import 'credential_offer.dart';
 import 'credential_request.dart';
 import 'credential_request_metadata.dart';
+import 'credential_revocation_config.dart';
 import 'revocation_registry_definition.dart';
 import 'utils.dart';
 
@@ -100,17 +99,16 @@ class W3cCredential extends AnoncredsObject {
               objectHandles);
 
       credentialHandle = anoncreds
-              ?.createW3cCredential(
-                credentialDefinition: credentialDefinition,
-                credentialDefinitionPrivate: credentialDefinitionPrivate,
-                credentialOffer: credentialOffer,
-                credentialRequest: credentialRequest,
-                attributeRawValues: options.attributeRawValues,
-                revocationConfiguration: options.revocationConfiguration?.native,
-                w3cVersion: options.w3cVersion,
-              )
-              .handle ??
-          0;
+          .createW3cCredential(
+            credentialDefinition: credentialDefinition,
+            credentialDefinitionPrivate: credentialDefinitionPrivate,
+            credentialOffer: credentialOffer,
+            credentialRequest: credentialRequest,
+            attributeRawValues: options.attributeRawValues,
+            revocationConfiguration: options.revocationConfiguration?.native,
+            w3cVersion: options.w3cVersion,
+          )
+          .handle;
     } finally {
       for (var handle in objectHandles) {
         handle.clear();
@@ -122,7 +120,7 @@ class W3cCredential extends AnoncredsObject {
 
   factory W3cCredential.fromJson(Map<String, dynamic> json) {
     try {
-      return anoncredsW3cCredentialFromJson(json).getValueOrException();
+      return anoncreds.w3cCredentialFromJson(json).getValueOrException();
     } catch (e) {
       throw AnoncredsException("Failed to get W3C credential offer from json: $e");
     }
@@ -159,14 +157,13 @@ class W3cCredential extends AnoncredsObject {
                       objectHandles)
                   : null;
 
-      credentialHandle = anoncreds?.processW3cCredential(
-            credential: handle,
-            credentialDefinition: credentialDefinition,
-            credentialRequestMetadata: credentialRequestMetadata,
-            linkSecret: options.linkSecret,
-            revocationRegistryDefinition: revocationRegistryDefinition,
-          ) ??
-          ObjectHandle(0);
+      credentialHandle = anoncreds.processW3cCredential(
+        credential: handle,
+        credentialDefinition: credentialDefinition,
+        credentialRequestMetadata: credentialRequestMetadata,
+        linkSecret: options.linkSecret,
+        revocationRegistryDefinition: revocationRegistryDefinition,
+      );
 
       handle.clear();
       handle = credentialHandle;
@@ -181,56 +178,52 @@ class W3cCredential extends AnoncredsObject {
 
   ObjectHandle getProofDetails() {
     proofDetails ??=
-        anoncreds?.w3cCredentialGetIntegrityProofDetails(objectHandle: handle);
+        anoncreds.w3cCredentialGetIntegrityProofDetails(objectHandle: handle);
     return proofDetails!;
   }
 
   String get schemaId {
-    return anoncreds?.w3cCredentialProofGetAttribute(
-            objectHandle: getProofDetails(), name: 'schema_id') ??
-        '';
+    return anoncreds.w3cCredentialProofGetAttribute(
+        objectHandle: getProofDetails(), name: 'schema_id');
   }
 
   String get credentialDefinitionId {
-    return anoncreds?.w3cCredentialProofGetAttribute(
-            objectHandle: getProofDetails(), name: 'cred_def_id') ??
-        '';
+    return anoncreds.w3cCredentialProofGetAttribute(
+        objectHandle: getProofDetails(), name: 'cred_def_id');
   }
 
   String get revocationRegistryId {
-    return anoncreds?.w3cCredentialProofGetAttribute(
-            objectHandle: getProofDetails(), name: 'rev_reg_id') ??
-        '';
+    return anoncreds.w3cCredentialProofGetAttribute(
+        objectHandle: getProofDetails(), name: 'rev_reg_id');
   }
 
   int? get revocationRegistryIndex {
-    String? index = anoncreds?.w3cCredentialProofGetAttribute(
+    String index = anoncreds.w3cCredentialProofGetAttribute(
         objectHandle: getProofDetails(), name: 'rev_reg_index');
-    return index != null ? int.parse(index) : null;
+    return int.parse(index);
   }
 
   int? get timestamp {
-    String? timestamp = anoncreds?.w3cCredentialProofGetAttribute(
+    String timestamp = anoncreds.w3cCredentialProofGetAttribute(
         objectHandle: getProofDetails(), name: 'timestamp');
-    return timestamp != null ? int.parse(timestamp) : null;
+    return int.parse(timestamp);
   }
 
   Credential toLegacy() {
     return Credential(
-      anoncreds?.credentialFromW3c(objectHandle: handle).handle ?? 0,
+      anoncreds.credentialFromW3c(objectHandle: handle).handle,
     );
   }
 
   factory W3cCredential.fromLegacy(W3cCredentialFromLegacyOptions options) {
     return W3cCredential(
       anoncreds
-              ?.credentialToW3c(
-                objectHandle: options.credential.handle,
-                issuerId: options.issuerId,
-                w3cVersion: options.w3cVersion,
-              )
-              .handle ??
-          0,
+          .credentialToW3c(
+            objectHandle: options.credential.handle,
+            issuerId: options.issuerId,
+            w3cVersion: options.w3cVersion,
+          )
+          .handle,
     );
   }
 }
