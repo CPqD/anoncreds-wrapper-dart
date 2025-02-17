@@ -139,10 +139,10 @@ abstract class IAnoncreds {
     ObjectHandle? revocationRegistryDefinition,
   });
 
-  ObjectHandle createCredentialOffer({
+  AnoncredsResult<CredentialOffer> createCredentialOffer({
     required String schemaId,
     required String credentialDefinitionId,
-    required ObjectHandle keyCorrectnessProof,
+    required KeyCorrectnessProof keyProof,
   });
 
   Map<String, ObjectHandle> createCredentialRequest({
@@ -415,12 +415,36 @@ class Anoncreds implements IAnoncreds {
   }
 
   @override
-  ObjectHandle createCredentialOffer(
-      {required String schemaId,
-      required String credentialDefinitionId,
-      required ObjectHandle keyCorrectnessProof}) {
-    // TODO: implement createCredentialOffer
-    throw UnimplementedError();
+  AnoncredsResult<CredentialOffer> createCredentialOffer({
+    required String schemaId,
+    required String credentialDefinitionId,
+    required KeyCorrectnessProof keyProof,
+  }) {
+    Pointer<Int64> credOfferPtr = calloc<Int64>();
+    Pointer<Utf8> schemaIdPtr = nullptr;
+    Pointer<Utf8> credDefinitionIdPtr = nullptr;
+
+    try {
+      schemaIdPtr = schemaId.toNativeUtf8();
+      credDefinitionIdPtr = credentialDefinitionId.toNativeUtf8();
+
+      final errorCode = ErrorCode.fromInt(
+        nativeAnoncredsCreateCredentialOffer(
+          schemaIdPtr,
+          credDefinitionIdPtr,
+          keyProof.handle.toInt(),
+          credOfferPtr,
+        ),
+      );
+
+      final value = (errorCode == ErrorCode.success) ? credOfferPtr.value : 0;
+
+      return AnoncredsResult(errorCode, CredentialOffer(value));
+    } finally {
+      freePointer(credOfferPtr);
+      freePointer(schemaIdPtr);
+      freePointer(credDefinitionIdPtr);
+    }
   }
 
   @override

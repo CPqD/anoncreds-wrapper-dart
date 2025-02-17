@@ -53,4 +53,9 @@ final class CredentialDefinitionCreation {
     this.credentialDefinitionPrivate,
     this.keyCorrectnessProof,
   );
+
+  @override
+  String toString() {
+    return "CredentialDefinitionCreation($credentialDefinition, $credentialDefinitionPrivate, $keyCorrectnessProof)";
+  }
 }

@@ -1,5 +1,5 @@
-import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/anoncreds_object.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/register.dart';
 
 import 'key_correctness_proof.dart';
@@ -7,12 +7,22 @@ import 'key_correctness_proof.dart';
 class CredentialOffer extends AnoncredsObject {
   CredentialOffer(super.handle);
 
-  static CredentialOffer create({
+  factory CredentialOffer.create({
     required String schemaId,
     required String credentialDefinitionId,
     required KeyCorrectnessProof keyCorrectnessProof,
   }) {
-    throw NotImplementedException("CredentialOffer.create");
+    try {
+      return anoncreds
+          .createCredentialOffer(
+            schemaId: schemaId,
+            credentialDefinitionId: credentialDefinitionId,
+            keyProof: keyCorrectnessProof,
+          )
+          .getValueOrException();
+    } catch (e) {
+      throw AnoncredsException("Failed to create credential offer: $e");
+    }
   }
 
   factory CredentialOffer.fromJson(Map<String, dynamic> json) {

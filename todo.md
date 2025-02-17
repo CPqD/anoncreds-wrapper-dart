@@ -1,7 +1,7 @@
 - [ ] anoncreds_buffer_free
 - [ ] anoncreds_create_credential
 - [x] anoncreds_create_credential_definition
-- [ ] anoncreds_create_credential_offer
+- [x] anoncreds_create_credential_offer
 - [ ] anoncreds_create_credential_request
 - [x] anoncreds_create_link_secret
 - [ ] anoncreds_create_or_update_revocation_state
