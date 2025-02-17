@@ -1,4 +1,4 @@
-import 'package:anoncreds_wrapper_dart/anoncreds/enums/anoncreds_error_code.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/enums/error_code.dart';
 
 class AnoncredsErrorCodeException extends AnoncredsException {
   final ErrorCode errorCode;

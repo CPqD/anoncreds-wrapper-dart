@@ -42,4 +42,9 @@ class Schema extends AnoncredsObject {
       throw AnoncredsException("Failed to get schema from json: $e");
     }
   }
+
+  @override
+  String toString() {
+    return "Schema(${handle.toInt()})";
+  }
 }

@@ -14,7 +14,7 @@ enum ErrorCode {
   final int code;
   const ErrorCode(this.code);
 
-  static ErrorCode fromInt(int code) {
+  factory ErrorCode.fromInt(int code) {
     return ErrorCode.values.firstWhere(
       (e) => e.code == code,
       orElse: () => throw ArgumentError('Invalid error code: $code'),

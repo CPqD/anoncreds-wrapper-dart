@@ -21,7 +21,8 @@ import 'package:anoncreds_wrapper_dart/anoncreds/api/w3c_presentation.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_native_functions.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_native_types.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_native_utils.dart';
-import 'package:anoncreds_wrapper_dart/anoncreds/enums/anoncreds_error_code.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/enums/error_code.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/enums/signature_type.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/object_handle.dart';
 import 'package:ffi/ffi.dart';
@@ -53,6 +54,73 @@ String anoncredsVersion() {
     return resultPointer.toDartString();
   } finally {
     freePointer(resultPointer);
+  }
+}
+
+final class CredentialDefinitionCreation {
+  final CredentialDefinition credentialDefinition;
+  final CredentialDefinitionPrivate credentialDefinitionPrivate;
+  final KeyCorrectnessProof keyCorrectnessProof;
+
+  CredentialDefinitionCreation(
+    this.credentialDefinition,
+    this.credentialDefinitionPrivate,
+    this.keyCorrectnessProof,
+  );
+}
+
+AnoncredsResult<CredentialDefinitionCreation> anoncredsCreateCredentialDefinition({
+  required String schemaId,
+  required ObjectHandle schemaHandle,
+  required String tag,
+  required String issuerId,
+  required SignatureType signatureType,
+  required bool supportRevocation,
+}) {
+  Pointer<Int64> credDefPtr = calloc<Int64>();
+  Pointer<Int64> credDefPvtPtr = calloc<Int64>();
+  Pointer<Int64> keyProofPtr = calloc<Int64>();
+
+  Pointer<Utf8> schemaIdPtr = nullptr;
+  Pointer<Utf8> tagPtr = nullptr;
+  Pointer<Utf8> issuerIdPtr = nullptr;
+  Pointer<Utf8> sigTypePtr = nullptr;
+
+  try {
+    schemaIdPtr = schemaId.toNativeUtf8();
+    tagPtr = tag.toNativeUtf8();
+    issuerIdPtr = issuerId.toNativeUtf8();
+    sigTypePtr = signatureType.value.toNativeUtf8();
+
+    final initialResult = nativeAnoncredsCreateCredentialDefinition(
+      schemaIdPtr,
+      schemaHandle.toInt(),
+      tagPtr,
+      issuerIdPtr,
+      sigTypePtr,
+      boolToInt(supportRevocation),
+      credDefPtr,
+      credDefPvtPtr,
+      keyProofPtr,
+    );
+
+    final errorCode = ErrorCode.fromInt(initialResult);
+
+    final value = CredentialDefinitionCreation(
+      CredentialDefinition(credDefPtr.value),
+      CredentialDefinitionPrivate(credDefPvtPtr.value),
+      KeyCorrectnessProof(keyProofPtr.value),
+    );
+
+    return AnoncredsResult(errorCode, value);
+  } finally {
+    freePointer(credDefPtr);
+    freePointer(credDefPvtPtr);
+    freePointer(keyProofPtr);
+    freePointer(schemaIdPtr);
+    freePointer(tagPtr);
+    freePointer(issuerIdPtr);
+    freePointer(sigTypePtr);
   }
 }
 

@@ -1,8 +1,8 @@
 // ignore_for_file: avoid_print
 
 import 'package:anoncreds_wrapper_dart/anoncreds/api/credential_definition.dart';
-import 'package:anoncreds_wrapper_dart/anoncreds/api/schema.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/enums/signature_type.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -15,27 +15,34 @@ void main() {
     });
 
     test('Get Credential Definition', () async {
-      final schema = Schema.fromJson({
+      final schemaJson = <String, dynamic>{
         'name': 'schema-1',
         'issuerId': 'mock:uri',
         'version': '1',
         'attrNames': ['name', 'age', 'sex', 'height']
-      });
-
-      final credDefinitionJson = <String, dynamic>{
-        'schemaId': 'mock:uri',
-        'issuerId': 'mock:uri',
-        'schema': schema,
-        'signatureType': 'CL',
-        'supportRevocation': true,
-        'tag': 'TAG'
       };
 
-      final credDefinition = CredentialDefinition.fromJson(credDefinitionJson);
+      final createResult = CredentialDefinition.create(
+        issuerId: 'mock:uri',
+        schemaId: 'mock:uri',
+        schema: schemaJson,
+        signatureType: SignatureType.cl,
+        supportRevocation: true,
+        tag: 'TAG',
+      );
 
-      final result = credDefinition.toJson();
+      final credDefinition = createResult.credentialDefinition;
+      print(credDefinition);
 
-      expect(result, equals('0.2.0'));
-    }, skip: 'Skipping this test until Schema is implemented');
+      final credDefinitionPrivate = createResult.credentialDefinitionPrivate;
+      print(credDefinitionPrivate);
+
+      final keyCorrectnessProof = createResult.keyCorrectnessProof;
+      print(keyCorrectnessProof);
+
+      credDefinition.handle.clear();
+      credDefinitionPrivate.handle.clear();
+      keyCorrectnessProof.handle.clear();
+    });
   });
 }
