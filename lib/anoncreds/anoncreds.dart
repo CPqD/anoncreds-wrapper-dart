@@ -96,9 +96,10 @@ abstract class IAnoncreds {
   String version();
 
   String getCurrentError();
+
   void setDefaultLogger();
 
-  String generateNonce();
+  AnoncredsResult<String> generateNonce();
 
   ObjectHandle createSchema({
     required String name,
@@ -610,9 +611,21 @@ class Anoncreds implements IAnoncreds {
   }
 
   @override
-  String generateNonce() {
-    // TODO: implement generateNonce
-    throw UnimplementedError();
+  AnoncredsResult<String> generateNonce() {
+    Pointer<Pointer<Utf8>> resultPtrPointer = calloc<Pointer<Utf8>>();
+
+    try {
+      final result = nativeAnoncredsGenerateNonce(resultPtrPointer);
+
+      final errorCode = ErrorCode.fromInt(result);
+
+      final String value =
+          (errorCode == ErrorCode.success) ? resultPtrPointer.value.toDartString() : "";
+
+      return AnoncredsResult(errorCode, value);
+    } finally {
+      freeDoublePointer(resultPtrPointer);
+    }
   }
 
   @override

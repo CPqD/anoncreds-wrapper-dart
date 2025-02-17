@@ -21,7 +21,7 @@
 - [x] anoncreds_credential_request_metadata_from_json
 - [ ] anoncreds_credential_to_w3c
 - [ ] anoncreds_encode_credential_attributes
-- [ ] anoncreds_generate_nonce
+- [x] anoncreds_generate_nonce
 - [ ] anoncreds_get_current_error
 - [x] anoncreds_key_correctness_proof_from_json
 - [x] anoncreds_object_free

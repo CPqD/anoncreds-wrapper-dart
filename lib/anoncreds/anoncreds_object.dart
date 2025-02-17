@@ -21,6 +21,6 @@ class AnoncredsObject {
 
   @override
   String toString() {
-    return "AnoncredsObject(${handle.toInt()})";
+    return "${handle.typeName()}(${handle.toInt()})";
   }
 }

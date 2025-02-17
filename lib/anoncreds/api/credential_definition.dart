@@ -55,9 +55,4 @@ class CredentialDefinition extends AnoncredsObject {
       throw AnoncredsException("Failed to get credential definition from json: $e");
     }
   }
-
-  @override
-  String toString() {
-    return "CredentialDefinition(${handle.toInt()})";
-  }
 }
