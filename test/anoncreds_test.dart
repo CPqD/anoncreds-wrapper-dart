@@ -2,6 +2,7 @@
 
 import 'package:anoncreds_wrapper_dart/anoncreds/api/credential_definition.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_wrapper.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/enums/error_code.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/enums/signature_type.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -44,5 +45,24 @@ void main() {
       credDefinitionPrivate.handle.clear();
       keyCorrectnessProof.handle.clear();
     });
+    test('Create Link Secret', () async {
+      createLinkSecretTest();
+    });
   });
+}
+
+AnoncredsResult<String> createLinkSecretTest() {
+  final result = anoncredsCreateLinkSecret();
+
+  printAnoncredsResult('Create Link Secret', result);
+  
+  expect(result.errorCode, equals(ErrorCode.success));
+  expect(result.value, isNotNull);
+  expect(result.value, isA<String>());
+
+  return result;
+}
+
+void printAnoncredsResult(String test, dynamic result) {
+  print('$test: $result\n');
 }

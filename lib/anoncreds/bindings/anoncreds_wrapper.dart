@@ -213,6 +213,25 @@ AnoncredsResult<String> anoncredsObjectGetTypeName(ObjectHandle handle) {
   }
 }
 
+AnoncredsResult<String> anoncredsCreateLinkSecret() {
+  Pointer<Pointer<Utf8>> resultPtrPointer = calloc<Pointer<Utf8>>();
+
+  try {
+    final result = nativeAnoncredsCreateLinkSecret(
+      resultPtrPointer,
+    );
+
+    final errorCode = ErrorCode.fromInt(result);
+
+    final value =
+        (errorCode == ErrorCode.success) ? resultPtrPointer.value.toDartString() : "";
+
+    return AnoncredsResult<String>(errorCode, value);
+  } finally {
+    freeDoublePointer(resultPtrPointer);
+  }
+}
+
 AnoncredsResult<Presentation> anoncredsPresentationFromJson(Map<String, dynamic> json) {
   final result = _fromJson(json, nativeAnoncredsPresentationFromJson);
 

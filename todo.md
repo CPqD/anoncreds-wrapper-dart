@@ -3,7 +3,7 @@
 - [x] anoncreds_create_credential_definition
 - [ ] anoncreds_create_credential_offer
 - [ ] anoncreds_create_credential_request
-- [ ] anoncreds_create_link_secret
+- [x] anoncreds_create_link_secret
 - [ ] anoncreds_create_or_update_revocation_state
 - [ ] anoncreds_create_presentation
 - [ ] anoncreds_create_revocation_registry_def
