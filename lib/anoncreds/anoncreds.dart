@@ -156,14 +156,17 @@ abstract class IAnoncreds {
 
   AnoncredsResult<String> createLinkSecret();
 
-  ObjectHandle createPresentation({
-    required ObjectHandle presentationRequest,
-    required List<NativeCredentialEntry> credentials,
-    required List<NativeCredentialProve> credentialsProve,
-    required Map<String, String> selfAttest,
+  AnoncredsResult<Presentation> createPresentation({
+    required PresentationRequest presentationRequest,
+    required List<CredentialEntry> credentials,
+    required List<CredentialProve> credentialsProve,
+    required List<String> selfAttestNames,
+    required List<String> selfAttestValues,
     required String linkSecret,
-    required Map<String, ObjectHandle> schemas,
-    required Map<String, ObjectHandle> credentialDefinitions,
+    required List<Schema> schemas,
+    required List<String> schemaIds,
+    required List<CredentialDefinition> credentialDefinitions,
+    required List<String> credentialDefinitionsIds,
   });
 
   bool verifyPresentation({
@@ -486,14 +489,21 @@ class Anoncreds implements IAnoncreds {
   }
 
   @override
-  ObjectHandle createPresentation(
-      {required ObjectHandle presentationRequest,
-      required List<NativeCredentialEntry> credentials,
-      required List<NativeCredentialProve> credentialsProve,
-      required Map<String, String> selfAttest,
-      required String linkSecret,
-      required Map<String, ObjectHandle> schemas,
-      required Map<String, ObjectHandle> credentialDefinitions}) {
+  AnoncredsResult<Presentation> createPresentation({
+    required PresentationRequest presentationRequest,
+    required List<CredentialEntry> credentials,
+    required List<CredentialProve> credentialsProve,
+    required List<String> selfAttestNames,
+    required List<String> selfAttestValues,
+    required String linkSecret,
+    required List<Schema> schemas,
+    required List<String> schemaIds,
+    required List<CredentialDefinition> credentialDefinitions,
+    required List<String> credentialDefinitionsIds,
+  }) {
+    nativeAnoncredsCreatePresentation(
+      presentationRequest.handle.toInt(),
+    );
     // TODO: implement createPresentation
     throw UnimplementedError();
   }

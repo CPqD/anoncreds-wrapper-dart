@@ -1,10 +1,9 @@
+import 'package:anoncreds_wrapper_dart/anoncreds/api/credential.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/exceptions.dart';
 
-import '../anoncreds.dart';
 import '../anoncreds_object.dart';
 import '../object_handle.dart';
 import '../register.dart';
-import 'credential.dart';
 import 'credential_definition.dart';
 import 'credential_revocation_state.dart';
 import 'presentation_request.dart';
@@ -12,7 +11,6 @@ import 'revocation_registry.dart';
 import 'revocation_registry_definition.dart';
 import 'revocation_status_list.dart';
 import 'schema.dart';
-import 'utils.dart';
 
 class NonRevokedIntervalOverride {
   final String revocationRegistryDefinitionId;
@@ -26,16 +24,20 @@ class NonRevokedIntervalOverride {
   });
 }
 
-class CredentialEntry {
-  final dynamic credential;
+class DynamicCredentialEntry<T> {
+  final T credential;
   final int? timestamp;
-  final dynamic revocationState;
+  final CredentialRevocationState? revocationState;
 
-  CredentialEntry({
+  DynamicCredentialEntry({
     required this.credential,
     this.timestamp,
     this.revocationState,
   });
+}
+
+class CredentialEntry extends DynamicCredentialEntry<Credential> {
+  CredentialEntry({required super.credential, super.timestamp, super.revocationState});
 }
 
 class CredentialProve {
@@ -66,7 +68,7 @@ class RevocationEntry {
 
 class CreatePresentationOptions {
   final dynamic presentationRequest;
-  final List<CredentialEntry> credentials;
+  final List<DynamicCredentialEntry> credentials;
   final List<CredentialProve> credentialsProve;
   final Map<String, String> selfAttest;
   final String linkSecret;
@@ -84,15 +86,15 @@ class CreatePresentationOptions {
   });
 }
 
-class VerifyPresentationOptions {
-  final dynamic presentationRequest;
-  final Map<String, dynamic> schemas;
-  final Map<String, dynamic> credentialDefinitions;
-  final Map<String, dynamic>? revocationRegistryDefinitions;
-  final List<dynamic>? revocationStatusLists;
+class DynamicVerifyPresentationOptions<T> {
+  final T presentationRequest;
+  final List<Schema> schemas;
+  final List<CredentialDefinition> credentialDefinitions;
+  final List<RevocationRegistryDefinition>? revocationRegistryDefinitions;
+  final List<RevocationStatusList>? revocationStatusLists;
   final List<NonRevokedIntervalOverride>? nonRevokedIntervalOverrides;
 
-  VerifyPresentationOptions({
+  DynamicVerifyPresentationOptions({
     required this.presentationRequest,
     required this.schemas,
     required this.credentialDefinitions,
@@ -102,68 +104,112 @@ class VerifyPresentationOptions {
   });
 }
 
+class VerifyPresentationOptions
+    extends DynamicVerifyPresentationOptions<PresentationRequest> {
+  VerifyPresentationOptions({
+    required super.presentationRequest,
+    required super.schemas,
+    required super.credentialDefinitions,
+    super.revocationRegistryDefinitions,
+    super.revocationStatusLists,
+    super.nonRevokedIntervalOverrides,
+  });
+}
+
 class Presentation extends AnoncredsObject {
   Presentation(super.handle);
 
-  factory Presentation.create(CreatePresentationOptions options) {
-    int presentationHandle;
-    List<ObjectHandle> objectHandles = [];
+  factory Presentation.create(CreatePresentationOptions opts) {
+    List<ObjectHandle> handlesToFree = [];
+
+    PresentationRequest presentationRequest;
+    List<CredentialEntry> credentials = [];
+    List<String> selfAttestNames = [];
+    List<String> selfAttestValues = [];
+    List<Schema> schemas = [];
+    List<String> schemasIDs = [];
+    List<CredentialDefinition> credentialDefs = [];
+    List<String> credentialDefIDs = [];
 
     try {
-      int presentationRequest = options.presentationRequest is PresentationRequest
-          ? options.presentationRequest.handle
-          : pushToArray(PresentationRequest.fromJson(options.presentationRequest).handle,
-              objectHandles);
+      if (opts.presentationRequest is PresentationRequest) {
+        presentationRequest = opts.presentationRequest;
+      } else {
+        presentationRequest = PresentationRequest.fromDynamic(opts.presentationRequest);
+        handlesToFree.add(presentationRequest.handle);
+      }
 
-      presentationHandle = anoncreds
+      for (var credentialEntry in opts.credentials) {
+        Credential credential;
+
+        if (credentialEntry.credential is Credential) {
+          credential = credentialEntry.credential;
+        } else {
+          credential = Credential.fromDynamic(credentialEntry.credential);
+          handlesToFree.add(credential.handle);
+        }
+
+        credentials.add(CredentialEntry(
+          credential: credential,
+          revocationState: credentialEntry.revocationState,
+          timestamp: credentialEntry.timestamp,
+        ));
+      }
+
+      opts.selfAttest.forEach((key, value) {
+        selfAttestNames.add(key);
+        selfAttestValues.add(value);
+      });
+
+      opts.schemas.forEach((schemaID, schemaValue) {
+        Schema schema;
+
+        if (schemaValue is Schema) {
+          schema = schemaValue;
+        } else {
+          schema = Schema.fromJson(schemaValue);
+          handlesToFree.add(schema.handle);
+        }
+
+        schemasIDs.add(schemaID);
+        schemas.add(schema);
+      });
+
+      opts.credentialDefinitions.forEach((key, value) {
+        CredentialDefinition credDef;
+
+        if (value is CredentialDefinition) {
+          credDef = value;
+        } else {
+          credDef = CredentialDefinition.fromJson(value);
+          handlesToFree.add(credDef.handle);
+        }
+
+        credentialDefIDs.add(key);
+        credentialDefs.add(credDef);
+      });
+
+      return anoncreds
           .createPresentation(
-            presentationRequest: ObjectHandle(presentationRequest),
-            credentials: options.credentials.map((item) {
-              return NativeCredentialEntry(
-                credential: item.credential is Credential
-                    ? item.credential.handle
-                    : pushToArray(
-                        Credential.fromJson(item.credential).handle, objectHandles),
-                revocationState: item.revocationState is CredentialRevocationState
-                    ? item.revocationState.handle
-                    : item.revocationState != null
-                        ? pushToArray(
-                            CredentialRevocationState.fromJson(item.revocationState)
-                                .handle,
-                            objectHandles)
-                        : null,
-                timestamp: item.timestamp,
-              );
-            }).toList(),
-            credentialsProve: options.credentialsProve.map((item) {
-              return NativeCredentialProve(
-                  entryIndex: item.entryIndex,
-                  referent: item.referent,
-                  isPredicate: item.isPredicate,
-                  reveal: item.reveal);
-            }).toList(),
-            selfAttest: options.selfAttest,
-            linkSecret: options.linkSecret,
-            schemas: options.schemas.map((id, object) {
-              ObjectHandle objectHandle =
-                  object is Schema ? object.handle : Schema.fromJson(object).handle;
-              return MapEntry(id, objectHandle);
-            }),
-            credentialDefinitions: options.credentialDefinitions.map((id, object) {
-              ObjectHandle objectHandle = object is CredentialDefinition
-                  ? object.handle
-                  : CredentialDefinition.fromJson(object).handle;
-              return MapEntry(id, objectHandle);
-            }),
+            presentationRequest: opts.presentationRequest,
+            credentials: credentials,
+            credentialsProve: opts.credentialsProve,
+            selfAttestNames: selfAttestNames,
+            selfAttestValues: selfAttestValues,
+            linkSecret: opts.linkSecret,
+            schemas: schemas,
+            schemaIds: schemasIDs,
+            credentialDefinitions: credentialDefs,
+            credentialDefinitionsIds: credentialDefIDs,
           )
-          .handle;
+          .getValueOrException();
+    } catch (e) {
+      throw AnoncredsException("Failed to create presentation: $e");
     } finally {
-      for (var handle in objectHandles) {
+      for (var handle in handlesToFree) {
         handle.clear();
       }
     }
-
-    return Presentation(presentationHandle);
   }
 
   factory Presentation.fromJson(Map<String, dynamic> json) {
@@ -175,67 +221,7 @@ class Presentation extends AnoncredsObject {
   }
 
   bool verify(VerifyPresentationOptions options) {
-    List<dynamic> schemas = options.schemas.values.toList();
-    List<String> schemaIds = options.schemas.keys.toList();
-
-    List<dynamic> credentialDefinitions = options.credentialDefinitions.values.toList();
-    List<String> credentialDefinitionIds = options.credentialDefinitions.keys.toList();
-
-    List<dynamic>? revocationRegistryDefinitions =
-        options.revocationRegistryDefinitions?.values.toList();
-    List<String>? revocationRegistryDefinitionIds =
-        options.revocationRegistryDefinitions?.keys.toList();
-
-    bool verified;
-    List<ObjectHandle> objectHandles = [];
-
-    try {
-      ObjectHandle presentationRequest =
-          options.presentationRequest is PresentationRequest
-              ? options.presentationRequest.handle
-              : pushToArray(
-                  PresentationRequest.fromJson(options.presentationRequest).handle,
-                  objectHandles);
-
-      verified = anoncreds.verifyPresentation(
-        presentation: handle,
-        presentationRequest: presentationRequest,
-        schemas: schemas.map((o) {
-          return o is Schema ? o.handle : Schema.fromJson(o).handle;
-        }).toList(),
-        schemaIds: schemaIds,
-        credentialDefinitions: credentialDefinitions.map((o) {
-          return o is CredentialDefinition
-              ? o.handle
-              : CredentialDefinition.fromJson(o).handle;
-        }).toList(),
-        credentialDefinitionIds: credentialDefinitionIds,
-        revocationRegistryDefinitions: revocationRegistryDefinitions?.map((o) {
-          return o is RevocationRegistryDefinition
-              ? o.handle
-              : RevocationRegistryDefinition.fromJson(o).handle;
-        }).toList(),
-        revocationRegistryDefinitionIds: revocationRegistryDefinitionIds,
-        revocationStatusLists: options.revocationStatusLists?.map((o) {
-          return o is RevocationStatusList
-              ? o.handle
-              : RevocationStatusList.fromJson(o).handle;
-        }).toList(),
-        nonRevokedIntervalOverrides: options.nonRevokedIntervalOverrides?.map((item) {
-          return NativeNonRevokedIntervalOverride(
-            revocationRegistryDefinitionId: item.revocationRegistryDefinitionId,
-            requestedFromTimestamp: item.requestedFromTimestamp,
-            overrideRevocationStatusListTimestamp:
-                item.overrideRevocationStatusListTimestamp,
-          );
-        }).toList(),
-      );
-    } finally {
-      for (var handle in objectHandles) {
-        handle.clear();
-      }
-    }
-
-    return verified;
+    // TODO
+    return false;
   }
 }

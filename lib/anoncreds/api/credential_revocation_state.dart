@@ -81,6 +81,23 @@ class CredentialRevocationState extends AnoncredsObject {
     }
   }
 
+  factory CredentialRevocationState.fromDynamic(dynamic credential) {
+    if (credential is CredentialRevocationState) {
+      return credential;
+    }
+
+    if (credential is Map<String, dynamic>) {
+      return CredentialRevocationState.fromJson(credential);
+    }
+
+    throw ArgumentError('Invalid CredentialRevocationState type');
+  }
+
+  static CredentialRevocationState? fromNullableDynamic(dynamic credential) {
+    if (credential == null) return null;
+    return CredentialRevocationState.fromDynamic(credential);
+  }
+
   void update(UpdateRevocationStateOptions options) {
     anoncreds.createOrUpdateRevocationState(
       revocationRegistryDefinition: options.revocationRegistryDefinition.handle,

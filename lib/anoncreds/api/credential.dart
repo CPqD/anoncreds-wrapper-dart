@@ -126,6 +126,14 @@ class Credential extends AnoncredsObject {
     }
   }
 
+  factory Credential.fromDynamic(dynamic credential) {
+    if (credential is Credential) return credential;
+
+    if (credential is Map<String, dynamic>) return Credential.fromJson(credential);
+
+    throw ArgumentError('Invalid Credential type');
+  }
+
   Credential process(ProcessCredentialOptions options) {
     ObjectHandle credential;
     List<ObjectHandle> objectHandles = [];

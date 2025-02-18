@@ -13,4 +13,14 @@ class PresentationRequest extends AnoncredsObject {
       throw AnoncredsException("Failed to get presentation request from json: $e");
     }
   }
+
+  factory PresentationRequest.fromDynamic(dynamic presentationRequest) {
+    if (presentationRequest is PresentationRequest) return presentationRequest;
+
+    if (presentationRequest is Map<String, dynamic>) {
+      return PresentationRequest.fromJson(presentationRequest);
+    }
+
+    throw ArgumentError('Invalid PresentationRequest type');
+  }
 }
