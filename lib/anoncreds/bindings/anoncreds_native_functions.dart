@@ -204,13 +204,13 @@ final int Function(
   Pointer<Utf8> schema_name,
   Pointer<Utf8> schema_version,
   Pointer<Utf8> issuer_id,
-  Pointer<FfiStrList> attr_names,
+  FfiStrList attr_names,
   Pointer<Int64> result_p,
 ) nativeAnoncredsCreateSchema = nativeLib
     .lookup<
         NativeFunction<
-            Int32 Function(Pointer<Utf8>, Pointer<Utf8>, Pointer<Utf8>,
-                Pointer<FfiStrList>, Pointer<Int64>)>>('anoncreds_create_schema')
+            Int32 Function(Pointer<Utf8>, Pointer<Utf8>, Pointer<Utf8>, FfiStrList,
+                Pointer<Int64>)>>('anoncreds_create_schema')
     .asFunction();
 
 final int Function(

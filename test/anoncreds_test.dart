@@ -4,6 +4,7 @@ import 'package:anoncreds_wrapper_dart/anoncreds/api/credential_definition.dart'
 import 'package:anoncreds_wrapper_dart/anoncreds/api/credential_offer.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/api/key_correctness_proof.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/api/presentation_request.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/api/schema.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/api/utils.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/types.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/enums/error_code.dart';
@@ -17,6 +18,22 @@ void main() {
       String result = withPrint(anoncreds.version);
 
       expect(result, equals('0.2.0'));
+    });
+
+    test('Create Schema', () async {
+      final createSchemaResult = withPrint(() => Schema.create(
+            schemaName: 'schema-1',
+            schemaVersion: '1',
+            issuerId: 'mock:uri',
+            attributeNames: ['attr-1', 'attr-2', 'attr-3'],
+          ));
+
+      final schema = withPrint(() => Schema.fromJson(createSchemaResult.toJson()));
+
+      expect(createSchemaResult.toJson(), equals(schema.toJson()));
+
+      createSchemaResult.handle.clear();
+      schema.handle.clear();
     });
 
     test('Create Credential Definition and Offer', () async {

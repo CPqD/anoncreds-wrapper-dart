@@ -20,17 +20,23 @@ class CreateSchemaOptions {
 class Schema extends AnoncredsObject {
   Schema(super.handle);
 
-  factory Schema.create(CreateSchemaOptions options) {
-    return Schema(
-      anoncreds
+  static Schema create({
+    required String schemaName,
+    required String schemaVersion,
+    required String issuerId,
+    required List<String> attributeNames,
+  }) {
+    try {
+      return anoncreds
           .createSchema(
-            name: options.name,
-            version: options.version,
-            issuerId: options.issuerId,
-            attributeNames: options.attributeNames,
-          )
-          .handle,
-    );
+              name: schemaName,
+              version: schemaVersion,
+              issuerId: issuerId,
+              attributeNames: attributeNames)
+          .getValueOrException();
+    } catch (e) {
+      throw AnoncredsException("Failed to create schema: $e");
+    }
   }
 
   factory Schema.fromJson(Map<String, dynamic> json) {

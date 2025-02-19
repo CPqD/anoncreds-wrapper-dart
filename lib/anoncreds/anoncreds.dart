@@ -16,6 +16,7 @@ import 'package:anoncreds_wrapper_dart/anoncreds/api/revocation_registry_definit
 import 'package:anoncreds_wrapper_dart/anoncreds/api/revocation_registry_definition_private.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/api/revocation_status_list.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/api/schema.dart';
+import 'package:anoncreds_wrapper_dart/anoncreds/api/utils.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/api/w3c_credential.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/api/w3c_presentation.dart';
 import 'package:anoncreds_wrapper_dart/anoncreds/bindings/anoncreds_native_functions.dart';
@@ -101,7 +102,7 @@ abstract class IAnoncreds {
 
   AnoncredsResult<String> generateNonce();
 
-  ObjectHandle createSchema({
+  AnoncredsResult<Schema> createSchema({
     required String name,
     required String version,
     required String issuerId,
@@ -525,13 +526,39 @@ class Anoncreds implements IAnoncreds {
   }
 
   @override
-  ObjectHandle createSchema(
-      {required String name,
-      required String version,
-      required String issuerId,
-      required List<String> attributeNames}) {
-    // TODO: implement createSchema
-    throw UnimplementedError();
+  AnoncredsResult<Schema> createSchema({
+    required String name,
+    required String version,
+    required String issuerId,
+    required List<String> attributeNames,
+  }) {
+    Pointer<Utf8> schemaNamePtr = nullptr;
+    Pointer<Utf8> schemaVersionPtr = nullptr;
+    Pointer<Utf8> issuerIdPtr = nullptr;
+    Pointer<FfiStrList> attrNamesPtr = nullptr;
+    Pointer<Int64> resultPtr = calloc<Int64>();
+
+    try {
+      schemaNamePtr = name.toNativeUtf8();
+      schemaVersionPtr = version.toNativeUtf8();
+      issuerIdPtr = issuerId.toNativeUtf8();
+      attrNamesPtr = toFfiStrList(attributeNames);
+
+      final initialResult = nativeAnoncredsCreateSchema(
+          schemaNamePtr, schemaVersionPtr, issuerIdPtr, attrNamesPtr.ref, resultPtr);
+
+      final errorCode = ErrorCode.fromInt(initialResult);
+
+      final value = Schema(resultPtr.value);
+
+      return AnoncredsResult(errorCode, value);
+    } finally {
+      freePointer(schemaNamePtr);
+      freePointer(schemaVersionPtr);
+      freePointer(issuerIdPtr);
+      freePointer(attrNamesPtr);
+      freePointer(resultPtr);
+    }
   }
 
   @override
